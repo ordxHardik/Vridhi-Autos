@@ -13,22 +13,11 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <Homepage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/items"
-            element={
-              <ProtectedRoute>
-                <ItemPage />
-              </ProtectedRoute>
-            }
-          />
+          {/* Public Routes */}
+          <Route path="/" element={<Homepage />} />
+          <Route path="/items" element={<ItemPage />} />
+
+          {/* Protected Routes */}
           <Route
             path="/cart"
             element={
@@ -53,6 +42,8 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          {/* Auth Routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
         </Routes>

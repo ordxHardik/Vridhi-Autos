@@ -31,6 +31,7 @@ app.use(morgan("dev"));
 app.use("/api/items", require("./routes/itemRoutes"));
 app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/bills", require("./routes/billsRoute"));
+app.use("/api/categories", require("./routes/categoryRoutes"));
 
 //For local development only
 if (process.env.NODE_ENV !== "production") {
