@@ -3,7 +3,8 @@ import DefaultLayout from "../components/DefaultLayout";
 import { useDispatch } from "react-redux";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import axios from "axios";
-import { Modal, Button, Table, Form, Input, Select, message } from "antd";
+import { Modal, Button, Table, Form, Input, Select, message, Upload } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
 import Header from "../components/Header";
 const ItemPage = () => {
   const dispatch = useDispatch();
@@ -13,7 +14,11 @@ const ItemPage = () => {
   const [categories, setCategories] = useState([]);
   const [categoryModal, setCategoryModal] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
-  const [newCategoryImage, setNewCategoryImage] = useState("");
+  const [newCategoryImage, setNewCategoryImage] = useState(null);
+  const [itemImage, setItemImage] = useState(null);
+  const [itemImagePreview, setItemImagePreview] = useState("");
+  const [categoryImagePreview, setCategoryImagePreview] = useState("");
+  const [form] = Form.useForm();
   const getAllItems = async () => {
     try {
       dispatch({
@@ -78,7 +83,7 @@ const ItemPage = () => {
       title: "Image",
       dataIndex: "image",
       render: (image, record) => (
-        <img src={image} alt={record.name} height="60" width="60" />
+        <img src={`${process.env.REACT_APP_SERVER_URL}${image}`} alt={record.name} height="60" width="60" />
       ),
     },
     { title: "Price", dataIndex: "price" },
@@ -108,18 +113,40 @@ const ItemPage = () => {
 
   // handle form  submit
   const handleSubmit = async (value) => {
+    if (!itemImage && !editItem) {
+      message.error("Please upload an image");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("name", value.name);
+    formData.append("price", value.price);
+    formData.append("category", value.category);
+
+    if (itemImage) {
+      formData.append("image", itemImage);
+    }
+
     if (editItem === null) {
       try {
         dispatch({
           type: "SHOW_LOADING",
         });
-        const res = await axios.post(
+        await axios.post(
           `${process.env.REACT_APP_SERVER_URL}/api/items/add-item`,
-          value
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
         );
-        message.success("Item Added Succesfully");
+        message.success("Item Added Successfully");
         getAllItems();
         setPopupModal(false);
+        setItemImage(null);
+        setItemImagePreview("");
+        form.resetFields();
         dispatch({ type: "HIDE_LOADING" });
       } catch (error) {
         dispatch({ type: "HIDE_LOADING" });
@@ -131,16 +158,23 @@ const ItemPage = () => {
         dispatch({
           type: "SHOW_LOADING",
         });
+        formData.append("itemId", editItem._id);
         await axios.put(
           `${process.env.REACT_APP_SERVER_URL}/api/items/edit-item`,
+          formData,
           {
-            ...value,
-            itemId: editItem._id,
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
           }
         );
-        message.success("Item Updated Succesfully");
+        message.success("Item Updated Successfully");
         getAllItems();
         setPopupModal(false);
+        setEditItem(null);
+        setItemImage(null);
+        setItemImagePreview("");
+        form.resetFields();
         dispatch({ type: "HIDE_LOADING" });
       } catch (error) {
         dispatch({ type: "HIDE_LOADING" });
@@ -154,23 +188,35 @@ const ItemPage = () => {
   const handleAddCategory = async () => {
     if (newCategoryName.trim()) {
       if (!categories.find(cat => cat.name === newCategoryName)) {
+        if (!newCategoryImage) {
+          message.error("Please upload an image for the category");
+          return;
+        }
         try {
           dispatch({
             type: "SHOW_LOADING",
           });
+
+          const formData = new FormData();
+          formData.append("name", newCategoryName);
+          formData.append("image", newCategoryImage);
+
           const res = await axios.post(
             `${process.env.REACT_APP_SERVER_URL}/api/categories/add-category`,
+            formData,
             {
-              name: newCategoryName,
-              image: newCategoryImage,
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
             }
           );
           dispatch({ type: "HIDE_LOADING" });
-          
+
           // Add new category to state
           setCategories([...categories, res.data.data]);
           setNewCategoryName("");
-          setNewCategoryImage("");
+          setNewCategoryImage(null);
+          setCategoryImagePreview("");
           setCategoryModal(false);
           message.success("Category added successfully!");
         } catch (error) {
@@ -211,6 +257,9 @@ const ItemPage = () => {
             onCancel={() => {
               setEditItem(null);
               setPopupModal(false);
+              setItemImage(null);
+              setItemImagePreview("");
+              form.resetFields();
             }}
             footer={false}
           >
@@ -218,17 +267,50 @@ const ItemPage = () => {
               layout="vertical"
               initialValues={editItem}
               onFinish={handleSubmit}
+              form={form}
             >
-              <Form.Item name="name" label="Name">
+              <Form.Item name="name" label="Name" rules={[{ required: true, message: "Please enter item name" }]}>
                 <Input />
               </Form.Item>
-              <Form.Item name="price" label="Price">
-                <Input />
+              <Form.Item name="price" label="Price" rules={[{ required: true, message: "Please enter item price" }]}>
+                <Input type="number" />
               </Form.Item>
-              <Form.Item name="image" label="Image URL">
-                <Input />
+              <Form.Item label="Item Image" rules={[{ required: !editItem || !editItem.image, message: "Please upload an image" }]}>
+                <div>
+                  <Upload
+                    accept="image/*"
+                    maxCount={1}
+                    beforeUpload={(file) => {
+                      setItemImage(file);
+                      const reader = new FileReader();
+                      reader.onload = (e) => {
+                        setItemImagePreview(e.target.result);
+                      };
+                      reader.readAsDataURL(file);
+                      return false;
+                    }}
+                    onRemove={() => {
+                      setItemImage(null);
+                      setItemImagePreview("");
+                    }}
+                  >
+                    <Button icon={<PlusOutlined />}>Upload Image</Button>
+                  </Upload>
+                  {itemImagePreview && (
+                    <div style={{ marginTop: "10px", textAlign: "center" }}>
+                      <p>Preview:</p>
+                      <img src={itemImagePreview} alt="Item Preview" height="80" width="80" style={{ borderRadius: "4px" }} />
+                    </div>
+                  )}
+                  {!itemImagePreview && editItem && editItem.image && (
+                    <div style={{ marginTop: "10px", textAlign: "center" }}>
+                      <p>Current Image:</p>
+                      <img src={`${process.env.REACT_APP_SERVER_URL}${editItem.image}`} alt="Current Item" height="80" width="80" style={{ borderRadius: "4px" }} />
+                    </div>
+                  )}
+                </div>
               </Form.Item>
-              <Form.Item name="category" label="Category">
+              <Form.Item name="category" label="Category" rules={[{ required: true, message: "Please select a category" }]}>
                 <Select
                   placeholder="Select a category"
                   allowClear
@@ -256,7 +338,8 @@ const ItemPage = () => {
             visible={categoryModal}
             onCancel={() => {
               setNewCategoryName("");
-              setNewCategoryImage("");
+              setNewCategoryImage(null);
+              setCategoryImagePreview("");
               setCategoryModal(false);
             }}
             footer={false}
@@ -269,18 +352,32 @@ const ItemPage = () => {
                   onChange={(e) => setNewCategoryName(e.target.value)}
                 />
               </Form.Item>
-              <Form.Item label="Category Image URL">
-                <Input
-                  placeholder="Enter image URL"
-                  value={newCategoryImage}
-                  onChange={(e) => setNewCategoryImage(e.target.value)}
-                />
+              <Form.Item label="Category Image">
+                <Upload
+                  accept="image/*"
+                  maxCount={1}
+                  beforeUpload={(file) => {
+                    setNewCategoryImage(file);
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                      setCategoryImagePreview(e.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                    return false;
+                  }}
+                  onRemove={() => {
+                    setNewCategoryImage(null);
+                    setCategoryImagePreview("");
+                  }}
+                >
+                  <Button icon={<PlusOutlined />}>Upload Image</Button>
+                </Upload>
               </Form.Item>
-              {newCategoryImage && (
+              {categoryImagePreview && (
                 <div style={{ marginBottom: "15px", textAlign: "center" }}>
                   <p>Preview:</p>
                   <img
-                    src={newCategoryImage}
+                    src={categoryImagePreview}
                     alt="Category Preview"
                     height="80"
                     width="80"
@@ -292,7 +389,8 @@ const ItemPage = () => {
                 <Button
                   onClick={() => {
                     setNewCategoryName("");
-                    setNewCategoryImage("");
+                    setNewCategoryImage(null);
+                    setCategoryImagePreview("");
                     setCategoryModal(false);
                   }}
                 >

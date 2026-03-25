@@ -15,11 +15,11 @@ const ItemList = ({ item }) => {
     <div>
       <Card
         style={{ width: 240, margin: 15 }}
-        // cover={}
+      // cover={}
       >
         <img
           alt={item.name}
-          src={item.image}
+          src={`${process.env.REACT_APP_SERVER_URL}${item.image}`}
           style={{ height: 200, width: "100%", objectFit: "cover" }}
         />
         <Meta title={item.name} />

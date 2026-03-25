@@ -13,7 +13,20 @@ const getItemController = async (req, res) => {
 //add items
 const addItemController = async (req, res) => {
   try {
-    const newItem = new itemModel(req.body);
+    const { name, price, category } = req.body;
+
+    // Get image path from uploaded file
+    let imagePath = '';
+    if (req.file) {
+      imagePath = `/uploads/${req.file.filename}`;
+    }
+
+    const newItem = new itemModel({
+      name,
+      price,
+      category,
+      image: imagePath,
+    });
     await newItem.save();
     res.status(201).send("Item Created Successfully!");
   } catch (error) {
@@ -27,7 +40,15 @@ const editItemController = async (req, res) => {
   try {
     const { itemId } = req.body;
     console.log(itemId);
-    await itemModel.findOneAndUpdate({ _id: itemId }, req.body, {
+
+    let updateData = { ...req.body };
+
+    // If a new file is uploaded, update the image path
+    if (req.file) {
+      updateData.image = `/uploads/${req.file.filename}`;
+    }
+
+    await itemModel.findOneAndUpdate({ _id: itemId }, updateData, {
       new: true,
     });
 

@@ -1,4 +1,5 @@
 const express = require("express");
+const upload = require("../middleware/uploadMiddleware");
 const {
   getItemController,
   addItemController,
@@ -12,11 +13,11 @@ const router = express.Router();
 //Method - get
 router.get("/get-item", getItemController);
 
-//MEthod - POST
-router.post("/add-item", addItemController);
+//Method - POST with file upload
+router.post("/add-item", upload.single('image'), addItemController);
 
-//method - PUT
-router.put("/edit-item", editItemController);
+//method - PUT with file upload
+router.put("/edit-item", upload.single('image'), editItemController);
 
 //method - DELETE
 router.post("/delete-item", deleteItemController);

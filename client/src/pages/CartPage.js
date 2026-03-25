@@ -36,7 +36,7 @@ const CartPage = () => {
       title: "Image",
       dataIndex: "image",
       render: (image, record) => (
-        <img src={image} alt={record.name} height="60" width="60" />
+        <img src={`${process.env.REACT_APP_SERVER_URL}${image}`} alt={record.name} height="60" width="60" />
       ),
     },
     { title: "Price", dataIndex: "price" },

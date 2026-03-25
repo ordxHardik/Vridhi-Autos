@@ -35,70 +35,70 @@ const DefaultLayout = ({ children }) => {
     <Layout>
       {loading && <Spinner />}
       {isLoggedIn && (
-      <Sider trigger={null} collapsible collapsed={collapsed}>
-        <div className="logo">
-          <h1 className="text-center text-light font-wight-bold mb-4 mt-4">
-            NEON Sports
-          </h1>
-        </div>
-        <Menu
-          theme="dark"
-          mode="inline"
-          defaultSelectedKeys={window.location.pathname}
-        >
-          <Menu.Item key="/" icon={<HomeOutlined />}>
-            <Link to="/">Home</Link>
-          </Menu.Item>
-          <Menu.Item key="/bills" icon={<CopyOutlined />}>
-            <Link to="/bills">Bills</Link>
-          </Menu.Item>
-          <Menu.Item key="/items" icon={<UnorderedListOutlined />}>
-            <Link to="/items">Items</Link>
-          </Menu.Item>
-          <Menu.Item key="/customers" icon={<UserOutlined />}>
-            <Link to="/customers">Customers</Link>
-          </Menu.Item>
-          <Menu.Item key="/dev" icon={<GithubOutlined />}>
-            <a
-              href="https://github.com/ishanaudichya/business-erp-mern"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Git Repo
-            </a>
-          </Menu.Item>
-          <Menu.Item
-            key="/logout"
-            icon={<LogoutOutlined />}
-            onClick={() => {
-              localStorage.removeItem("auth");
-              navigate("/login");
-            }}
+        <Sider trigger={null} collapsible collapsed={collapsed}>
+          <div className="logo">
+            <h1 className="text-center text-light font-wight-bold mb-4 mt-4">
+              NEON Sports
+            </h1>
+          </div>
+          <Menu
+            theme="dark"
+            mode="inline"
+            defaultSelectedKeys={window.location.pathname}
           >
-            Logout
-          </Menu.Item>
-        </Menu>
-        <div
-          className="text-center text-light font-wight-bold mb-4 b-0 w-100 position-absolute"
-          style={{ position: "absolute", bottom: "0", width: "100%" }}
-        >
-          Under ESPL<br></br>{" "}
-          <a href="https://ishanaudichya.netlify.app/">Ishan Audichya</a>
-        </div>
-      </Sider>
+            <Menu.Item key="/" icon={<HomeOutlined />}>
+              <Link to="/">Home</Link>
+            </Menu.Item>
+            <Menu.Item key="/bills" icon={<CopyOutlined />}>
+              <Link to="/bills">Bills</Link>
+            </Menu.Item>
+            <Menu.Item key="/items" icon={<UnorderedListOutlined />}>
+              <Link to="/items">Items</Link>
+            </Menu.Item>
+            <Menu.Item key="/customers" icon={<UserOutlined />}>
+              <Link to="/customers">Customers</Link>
+            </Menu.Item>
+            <Menu.Item key="/dev" icon={<GithubOutlined />}>
+              <a
+                href="https://github.com/ishanaudichya/business-erp-mern"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Git Repo
+              </a>
+            </Menu.Item>
+            <Menu.Item
+              key="/logout"
+              icon={<LogoutOutlined />}
+              onClick={() => {
+                localStorage.removeItem("auth");
+                navigate("/login");
+              }}
+            >
+              Logout
+            </Menu.Item>
+          </Menu>
+          <div
+            className="text-center text-light font-wight-bold mb-4 b-0 w-100 position-absolute"
+            style={{ position: "absolute", bottom: "0", width: "100%" }}
+          >
+            Under ESPL<br></br>{" "}
+            <a href="https://ishanaudichya.netlify.app/">Ishan Audichya</a>
+          </div>
+        </Sider>
       )}
       <Layout className="site-layout">
         <Header className="site-layout-background" style={{ padding: 0 }}>
           {isLoggedIn && (
-          <>
-          {React.createElement(
-            collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
-            {
-              className: "trigger",
-              onClick: toggle,
-            }
-          )}
-          </>
+            <>
+              {React.createElement(
+                collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
+                {
+                  className: "trigger",
+                  onClick: toggle,
+                }
+              )}
+            </>
           )}
           <div
             className="cart-item d-flex justify-content-space-between flex-row"

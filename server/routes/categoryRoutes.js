@@ -1,8 +1,9 @@
 const express = require("express");
+const upload = require("../middleware/uploadMiddleware");
 const {
-  getAllCategories,
-  addCategory,
-  deleteCategory,
+    getAllCategories,
+    addCategory,
+    deleteCategory,
 } = require("../controllers/categoryController");
 
 const router = express.Router();
@@ -10,8 +11,8 @@ const router = express.Router();
 // Get all categories
 router.get("/get-categories", getAllCategories);
 
-// Add new category
-router.post("/add-category", addCategory);
+// Add new category with file upload
+router.post("/add-category", upload.single('image'), addCategory);
 
 // Delete category
 router.post("/delete-category", deleteCategory);

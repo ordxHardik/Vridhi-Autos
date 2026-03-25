@@ -3,6 +3,7 @@ const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const dotanv = require("dotenv");
+const path = require("path");
 const { bgCyan } = require("colors");
 require("colors");
 const connectDb = require("./config/config");
@@ -26,6 +27,9 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(morgan("dev"));
+
+// Serve static files from uploads directory
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 //routes
 app.use("/api/items", require("./routes/itemRoutes"));
