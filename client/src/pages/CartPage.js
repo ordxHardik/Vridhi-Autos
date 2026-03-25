@@ -85,6 +85,13 @@ const CartPage = () => {
   //handleSubmit
   const handleSubmit = async (value) => {
     try {
+      const auth = localStorage.getItem("auth");
+      if (!auth) {
+        message.error("Please login to create an invoice");
+        navigate("/login");
+        return;
+      }
+
       const newObject = {
         ...value,
         cartItems,
@@ -93,7 +100,7 @@ const CartPage = () => {
         totalAmount: Number(
           Number(subTotal) + Number(((subTotal / 100) * 18).toFixed(2))
         ),
-        userId: JSON.parse(localStorage.getItem("auth"))._id,
+        userId: JSON.parse(auth)._id,
       };
       // console.log(newObject);
       await axios.post(

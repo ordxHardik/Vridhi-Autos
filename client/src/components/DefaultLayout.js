@@ -38,7 +38,7 @@ const DefaultLayout = ({ children }) => {
         <Sider trigger={null} collapsible collapsed={collapsed}>
           <div className="logo">
             <h1 className="text-center text-light font-wight-bold mb-4 mt-4">
-              NEON Sports
+              VRIDHI AUTOS
             </h1>
           </div>
           <Menu
@@ -136,7 +136,7 @@ const DefaultLayout = ({ children }) => {
           {children}
         </Content>
       </Layout>
-    </Layout>
+    </Layout >
   );
 };
 

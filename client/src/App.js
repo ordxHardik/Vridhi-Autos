@@ -17,15 +17,8 @@ function App() {
           <Route path="/" element={<Homepage />} />
           <Route path="/items" element={<ItemPage />} />
 
-          {/* Protected Routes */}
-          <Route
-            path="/cart"
-            element={
-              <ProtectedRoute>
-                <CartPage />
-              </ProtectedRoute>
-            }
-          />
+          {/* Public Routes */}
+          <Route path="/cart" element={<CartPage />} />
           <Route
             path="/bills"
             element={

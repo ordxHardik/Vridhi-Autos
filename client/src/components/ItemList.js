@@ -4,10 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 const ItemList = ({ item }) => {
   const dispatch = useDispatch();
   const { cartItems } = useSelector((state) => state.rootReducer);
-  
+
   // Check if item is already in cart
   const isItemInCart = cartItems.some((cartItem) => cartItem._id === item._id);
-  
+
   //update cart handler
   const handleAddTOCart = () => {
     if (!isItemInCart) {
@@ -17,7 +17,7 @@ const ItemList = ({ item }) => {
       });
     }
   };
-  
+
   const { Meta } = Card;
   return (
     <div>
@@ -32,7 +32,7 @@ const ItemList = ({ item }) => {
         />
         <Meta title={item.name} />
         <div className="item-button">
-          <Button 
+          <Button
             onClick={() => handleAddTOCart()}
             disabled={isItemInCart}
           >
