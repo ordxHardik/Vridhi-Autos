@@ -16,12 +16,7 @@ const CartPage = () => {
   const navigate = useNavigate();
   const { cartItems } = useSelector((state) => state.rootReducer);
   //handle increament
-  const handleIncreament = (record) => {
-    dispatch({
-      type: "UPDATE_CART",
-      payload: { ...record, quantity: record.quantity + 1 },
-    });
-  };
+
   const handleDecreament = (record) => {
     if (record.quantity !== 1) {
       dispatch({
@@ -29,6 +24,12 @@ const CartPage = () => {
         payload: { ...record, quantity: record.quantity - 1 },
       });
     }
+  };
+  const handleIncreament = (record) => {
+    dispatch({
+      type: "UPDATE_CART",
+      payload: { ...record, quantity: record.quantity + 1 },
+    });
   };
   const columns = [
     { title: "Name", dataIndex: "name" },
@@ -45,16 +46,16 @@ const CartPage = () => {
       dataIndex: "_id",
       render: (id, record) => (
         <div>
-          <PlusCircleOutlined
-            className="mx-3"
-            style={{ cursor: "pointer" }}
-            onClick={() => handleIncreament(record)}
-          />
-          <b>{record.quantity}</b>
           <MinusCircleOutlined
             className="mx-3"
             style={{ cursor: "pointer" }}
             onClick={() => handleDecreament(record)}
+          />
+          <b>{record.quantity}</b>
+          <PlusCircleOutlined
+            className="mx-3"
+            style={{ cursor: "pointer" }}
+            onClick={() => handleIncreament(record)}
           />
         </div>
       ),
@@ -84,6 +85,11 @@ const CartPage = () => {
 
   //handleSubmit
   const handleSubmit = async (value) => {
+    if (subTotal < 10000 || cartItems.some(item => item.price * item.quantity >= 10000)) {
+      message.error("The cart value is low. Please add more items to make the cart value above 10000.");
+      return;
+    }
+
     try {
       const auth = localStorage.getItem("auth");
       if (!auth) {
@@ -123,7 +129,16 @@ const CartPage = () => {
         <h3>
           SUB TOTAL : ₹ <b>{subTotal}</b> /-{" "}
         </h3>
-        <Button type="primary" onClick={() => setBillPopup(true)}>
+        <Button
+          type="primary"
+          onClick={() => {
+            if (subTotal >= 10000) {
+              setBillPopup(true);
+            } else {
+              message.error("The cart value is low. Please add more items to make the cart value above 10000.");
+            }
+          }}
+        >
           Create Invoice
         </Button>
       </div>
