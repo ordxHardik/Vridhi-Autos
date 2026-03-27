@@ -1,4 +1,4 @@
-#components-layout-demo-custom-trigger .trigger {
+/* #components-layout-demo-custom-trigger .trigger {
   padding: 0 24px;
   font-size: 18px;
   line-height: 64px;
@@ -28,7 +28,7 @@
 }
 .ant-card-meta-title{
   color: white !important;
-  /* align-items: center !important; */
+  /* align-items: center !important;
   padding-top: 8px !important;
   
 }
@@ -101,4 +101,5 @@
 .cart-item p {
   margin-top: 10px;
   font-weight: bold;
-}
+} */ 
+
