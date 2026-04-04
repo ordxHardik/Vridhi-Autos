@@ -20,6 +20,15 @@ const ItemPage = () => {
   const [itemImagePreview, setItemImagePreview] = useState("");
   const [categoryImagePreview, setCategoryImagePreview] = useState("");
   const [form] = Form.useForm();
+  const isLoggedIn = localStorage.getItem("auth");
+
+  const checkLogin = () => {
+    if (!isLoggedIn) {
+      message.error("Please login to edit the items");
+      return false;
+    }
+    return true;
+  };
 
   const getAllItems = async () => {
     try {
@@ -53,6 +62,7 @@ const ItemPage = () => {
   }, []);
 
   const handleDelete = async (record) => {
+    if (!checkLogin()) return;
     try {
       dispatch({ type: "SHOW_LOADING" });
       await axios.post(
@@ -105,7 +115,15 @@ const ItemPage = () => {
         <div style={{ display: "flex", gap: "8px" }}>
           <button
             className="item-action-btn edit"
-            onClick={() => { setEditItem(record); setPopupModal(true); }}
+            onClick={() => {
+              const isAuthenticated = localStorage.getItem("auth");
+              if (!isAuthenticated) {
+                message.error("Please login to edit the items");
+                return;
+              }
+              setEditItem(record);
+              setPopupModal(true);
+            }}
           >
             <EditOutlined />
           </button>
@@ -121,6 +139,7 @@ const ItemPage = () => {
   ];
 
   const handleSubmit = async (value) => {
+    if (!checkLogin()) return;
     if (!itemImage && !editItem) {
       message.error("Please upload an image");
       return;
@@ -171,6 +190,7 @@ const ItemPage = () => {
   };
 
   const handleAddCategory = async () => {
+    if (!checkLogin()) return;
     if (newCategoryName.trim()) {
       if (!categories.find((cat) => cat.name === newCategoryName)) {
         if (!newCategoryImage) {
@@ -407,13 +427,21 @@ const ItemPage = () => {
             <div className="item-hero-actions">
               <Button
                 className="item-hero-btn secondary"
-                onClick={() => setCategoryModal(true)}
+                onClick={() => {
+                  if (checkLogin()) {
+                    setCategoryModal(true);
+                  }
+                }}
               >
                 + Category
               </Button>
               <Button
                 className="item-hero-btn primary"
-                onClick={() => setPopupModal(true)}
+                onClick={() => {
+                  if (checkLogin()) {
+                    setPopupModal(true);
+                  }
+                }}
               >
                 + Add Item
               </Button>

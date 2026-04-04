@@ -270,13 +270,15 @@ const DefaultLayout = ({ children }) => {
                             { className: "jauter-trigger", onClick: toggle }
                         )
                     )}
-                    <div className="jauter-cart-wrapper" onClick={() => navigate("/cart")}>
-                        <ShoppingCartOutlined />
-                        Cart
-                        {cartItems.length > 0 && (
-                            <span className="jauter-cart-count">{cartItems.length}</span>
-                        )}
-                    </div>
+                    {isLoggedIn && (
+                        <div className="jauter-cart-wrapper" onClick={() => navigate("/cart")}>
+                            <ShoppingCartOutlined />
+                            Cart
+                            {cartItems.length > 0 && (
+                                <span className="jauter-cart-count">{cartItems.length}</span>
+                            )}
+                        </div>
+                    )}
                 </Header>
 
                 <Content className="jauter-content">

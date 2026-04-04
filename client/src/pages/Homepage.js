@@ -213,13 +213,207 @@ const Homepage = () => {
             font-size: 15px;
           }
 
-          /* Responsive */
+          /* ===== REVIEWS SECTION ===== */
+          .hp-reviews-section {
+            margin-top: 48px;
+            padding-top: 40px;
+            border-top: 2px solid #e0e0e0;
+          }
+
+          .hp-reviews-header {
+            text-align: center;
+            margin-bottom: 40px;
+          }
+
+          .hp-reviews-title {
+            font-size: 28px;
+            font-weight: 900;
+            color: #111;
+            margin-bottom: 8px;
+          }
+
+          .hp-reviews-subtitle {
+            font-size: 14px;
+            color: #888;
+          }
+
+          /* ── STAGGERED MASONRY LAYOUT ── */
+          /* Outer scroll wrapper for mobile */
+          .hp-reviews-scroll {
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            padding-bottom: 12px;
+          }
+          .hp-reviews-scroll::-webkit-scrollbar { display: none; }
+
+          /* The flex row of columns */
+          .hp-reviews-grid {
+            display: flex;
+            align-items: flex-end;   /* cards sit at the bottom baseline */
+            gap: 16px;
+            padding: 60px 4px 4px;  /* top padding gives room for the tallest stagger */
+            min-width: max-content;  /* keeps columns from wrapping on small screens */
+          }
+
+          /* Each review card — stagger via margin-bottom */
+          .hp-review-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            width: 260px;           /* fixed width per card */
+            flex-shrink: 0;
+          }
+
+          .hp-review-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+          }
+
+          /* Stagger: alternate cards up and down like the screenshot */
+          /* Card 1 — short, sits high */
+          .hp-review-card:nth-child(1) { margin-bottom: 60px; }
+          /* Card 2 — medium height */
+          .hp-review-card:nth-child(2) { margin-bottom: 30px; }
+          /* Card 3 — tallest, sits at baseline (no extra margin) */
+          .hp-review-card:nth-child(3) { margin-bottom: 0px; }
+          /* Card 4 — medium */
+          .hp-review-card:nth-child(4) { margin-bottom: 30px; }
+          /* Card 5 — short again */
+          .hp-review-card:nth-child(5) { margin-bottom: 60px; }
+
+          /* Review header with avatar and name */
+          .hp-review-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+          }
+
+          .hp-review-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #c8f000, #7c3aed);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 900;
+            font-size: 18px;
+            flex-shrink: 0;
+          }
+
+          .hp-review-info {
+            flex: 1;
+          }
+
+          .hp-review-name {
+            font-size: 14px;
+            font-weight: 800;
+            color: #111;
+            margin-bottom: 4px;
+          }
+
+          .hp-review-date {
+            font-size: 12px;
+            color: #aaa;
+          }
+
+          /* Star rating */
+          .hp-review-stars {
+            display: flex;
+            gap: 4px;
+            font-size: 16px;
+          }
+
+          .hp-review-stars .star {
+            color: #ffd700;
+          }
+
+          /* Review text */
+          .hp-review-text {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #666;
+            flex: 1;
+          }
+
+          /* Review footer */
+          .hp-review-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 12px;
+            border-top: 1px solid #f0f0f0;
+          }
+
+          .hp-review-rating-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #c8f000;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          }
+
+          .hp-review-helpful {
+            display: flex;
+            gap: 8px;
+            font-size: 12px;
+            color: #aaa;
+          }
+
+          .hp-review-helpful button {
+            background: none;
+            border: none;
+            color: #888;
+            cursor: pointer;
+            font-size: 12px;
+            transition: color 0.2s;
+          }
+
+          .hp-review-helpful button:hover {
+            color: #c8f000;
+          }
+
+          /* Responsive — on small screens collapse to vertical single column */
           @media (max-width: 768px) {
             .hp-items-grid {
               grid-template-columns: repeat(2, 1fr);
               gap: 12px;
             }
+            .hp-reviews-title {
+              font-size: 22px;
+            }
+            /* Keep horizontal scroll working but allow it */
+            .hp-reviews-grid {
+              padding: 50px 4px 4px;
+            }
+            .hp-review-card {
+              width: 220px;
+            }
           }
+
+          @media (max-width: 480px) {
+            .hp-reviews-grid {
+              gap: 12px;
+            }
+            .hp-review-card {
+              width: 200px;
+              padding: 18px;
+            }
+            /* Reduce stagger on very small screens */
+            .hp-review-card:nth-child(1) { margin-bottom: 40px; }
+            .hp-review-card:nth-child(2) { margin-bottom: 20px; }
+            .hp-review-card:nth-child(3) { margin-bottom: 0px; }
+            .hp-review-card:nth-child(4) { margin-bottom: 20px; }
+            .hp-review-card:nth-child(5) { margin-bottom: 40px; }
+          }
+
           @media (max-width: 400px) {
             .hp-cat-card { width: 100px; }
             .hp-cat-img { height: 70px; }
@@ -282,6 +476,156 @@ const Homepage = () => {
               No items found in this category.
             </div>
           )}
+
+          {/* Reviews Section */}
+          <div className="hp-reviews-section">
+            <div className="hp-reviews-header">
+              <h2 className="hp-reviews-title">What Our Customers Say</h2>
+              <p className="hp-reviews-subtitle">Real reviews from real customers</p>
+            </div>
+
+            {/* Scrollable staggered row */}
+            <div className="hp-reviews-scroll">
+              <div className="hp-reviews-grid">
+
+                {/* Review 1 */}
+                <div className="hp-review-card">
+                  <div className="hp-review-header">
+                    <div className="hp-review-avatar">RM</div>
+                    <div className="hp-review-info">
+                      <div className="hp-review-name">Rajesh Mehta</div>
+                      <div className="hp-review-date">2 weeks ago</div>
+                    </div>
+                  </div>
+                  <div className="hp-review-stars">
+                    <span className="star">★</span>
+                    <span className="star">★</span>
+                    <span className="star">★</span>
+                    <span className="star">★</span>
+                    <span className="star">★</span>
+                  </div>
+                  <p className="hp-review-text">
+                    Excellent quality auto parts! The delivery was fast and the packaging was perfect. The items arrived in perfect condition. Highly recommend this store to all vehicle owners.
+                  </p>
+                  <div className="hp-review-footer">
+                    <span className="hp-review-rating-label">Verified Purchase</span>
+                    <div className="hp-review-helpful">
+                      <button>👍 Helpful</button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Review 2 */}
+                <div className="hp-review-card">
+                  <div className="hp-review-header">
+                    <div className="hp-review-avatar">PS</div>
+                    <div className="hp-review-info">
+                      <div className="hp-review-name">Priya Singh</div>
+                      <div className="hp-review-date">1 month ago</div>
+                    </div>
+                  </div>
+                  <div className="hp-review-stars">
+                    <span className="star">★</span>
+                    <span className="star">★</span>
+                    <span className="star">★</span>
+                    <span className="star">★</span>
+                    <span className="star">★</span>
+                  </div>
+                  <p className="hp-review-text">
+                    Great collection and competitive prices. Customer service is very responsive and helpful. Already recommended them to my friends. Keep up the good work!
+                  </p>
+                  <div className="hp-review-footer">
+                    <span className="hp-review-rating-label">Verified Purchase</span>
+                    <div className="hp-review-helpful">
+                      <button>👍 Helpful</button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Review 3 */}
+                <div className="hp-review-card">
+                  <div className="hp-review-header">
+                    <div className="hp-review-avatar">AK</div>
+                    <div className="hp-review-info">
+                      <div className="hp-review-name">Arjun Kumar</div>
+                      <div className="hp-review-date">3 weeks ago</div>
+                    </div>
+                  </div>
+                  <div className="hp-review-stars">
+                    <span className="star">★</span>
+                    <span className="star">★</span>
+                    <span className="star">★</span>
+                    <span className="star">★</span>
+                    <span className="star">★</span>
+                  </div>
+                  <p className="hp-review-text">
+                    Outstanding service and quality. Found exactly what I needed for my car. The prices are reasonable and the checkout process was smooth. Will definitely order again!
+                  </p>
+                  <div className="hp-review-footer">
+                    <span className="hp-review-rating-label">Verified Purchase</span>
+                    <div className="hp-review-helpful">
+                      <button>👍 Helpful</button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Review 4 */}
+                <div className="hp-review-card">
+                  <div className="hp-review-header">
+                    <div className="hp-review-avatar">VP</div>
+                    <div className="hp-review-info">
+                      <div className="hp-review-name">Vikram Patel</div>
+                      <div className="hp-review-date">10 days ago</div>
+                    </div>
+                  </div>
+                  <div className="hp-review-stars">
+                    <span className="star">★</span>
+                    <span className="star">★</span>
+                    <span className="star">★</span>
+                    <span className="star">★</span>
+                    <span className="star">★</span>
+                  </div>
+                  <p className="hp-review-text">
+                    Amazing experience! Fast delivery, authentic products, and excellent communication throughout. This is my go-to shop for all auto parts now. Highly satisfied!
+                  </p>
+                  <div className="hp-review-footer">
+                    <span className="hp-review-rating-label">Verified Purchase</span>
+                    <div className="hp-review-helpful">
+                      <button>👍 Helpful</button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Review 5 */}
+                <div className="hp-review-card">
+                  <div className="hp-review-header">
+                    <div className="hp-review-avatar">NS</div>
+                    <div className="hp-review-info">
+                      <div className="hp-review-name">Neha Sharma</div>
+                      <div className="hp-review-date">5 days ago</div>
+                    </div>
+                  </div>
+                  <div className="hp-review-stars">
+                    <span className="star">★</span>
+                    <span className="star">★</span>
+                    <span className="star">★</span>
+                    <span className="star">★</span>
+                    <span className="star">★</span>
+                  </div>
+                  <p className="hp-review-text">
+                    Professional team, genuine products, and fantastic deals! I've been using their services for 6 months now and never had any issues. Truly a trusted brand!
+                  </p>
+                  <div className="hp-review-footer">
+                    <span className="hp-review-rating-label">Verified Purchase</span>
+                    <div className="hp-review-helpful">
+                      <button>👍 Helpful</button>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
         </div>
       </DefaultLayout>
     </>

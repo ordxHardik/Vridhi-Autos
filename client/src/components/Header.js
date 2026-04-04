@@ -1,37 +1,23 @@
-import React, { useState } from "react";
-import { Layout, Menu, Button, Space, Modal, Form, Input, message } from "antd";
+import React from "react";
+import { Layout, Button } from "antd";
 import { useNavigate } from "react-router-dom";
 import { ShoppingCartOutlined, LoginOutlined, LogoutOutlined, PhoneOutlined } from "@ant-design/icons";
-import axios from "axios";
 
 const { Header } = Layout;
 
 function AppHeader() {
     const navigate = useNavigate();
     const isLoggedIn = localStorage.getItem("auth");
-    const [contactModal, setContactModal] = useState(false);
-    const [form] = Form.useForm();
 
     const handleLogout = () => {
         localStorage.removeItem("auth");
         navigate("/login");
     };
 
-    const handleContactSubmit = async (values) => {
-        try {
-            await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/users/contact-us`, values);
-            message.success("Contact information sent successfully!");
-            form.resetFields();
-            setContactModal(false);
-        } catch (error) {
-            message.error("Failed to send contact information");
-        }
-    };
-
     const menuItems = [
         { label: "Home", key: "home", onClick: () => navigate("/") },
         { label: "Items", key: "items", onClick: () => navigate("/items") },
-        { label: "Contact Us", key: "contact", icon: <PhoneOutlined />, onClick: () => setContactModal(true) },
+        { label: "Contact Us", key: "contact", icon: <PhoneOutlined />, onClick: () => navigate("/contact") },
     ];
 
     return (
@@ -159,47 +145,6 @@ function AppHeader() {
                     box-shadow: 0 4px 12px rgba(124,58,237,0.35) !important;
                 }
 
-                /* Contact Modal */
-                .jauter-contact-modal .ant-modal-content {
-                    border-radius: 20px !important;
-                    overflow: hidden;
-                }
-                .jauter-contact-modal .ant-modal-header {
-                    background: #111 !important;
-                    border: none !important;
-                    padding: 20px 24px !important;
-                }
-                .jauter-contact-modal .ant-modal-title {
-                    color: #c8f000 !important;
-                    font-weight: 800 !important;
-                    font-size: 18px !important;
-                }
-                .jauter-contact-modal .ant-modal-close {
-                    color: #fff !important;
-                }
-                .jauter-contact-modal .ant-input {
-                    border-radius: 10px !important;
-                    border-color: #e0e0e0 !important;
-                }
-                .jauter-contact-modal .ant-input:focus {
-                    border-color: #c8f000 !important;
-                    box-shadow: 0 0 0 2px rgba(200,240,0,0.2) !important;
-                }
-                .jauter-contact-submit {
-                    background: #c8f000 !important;
-                    color: #111 !important;
-                    border: none !important;
-                    border-radius: 50px !important;
-                    font-weight: 800 !important;
-                    height: 44px !important;
-                    transition: all 0.2s ease !important;
-                }
-                .jauter-contact-submit:hover {
-                    background: #d4ff00 !important;
-                    box-shadow: 0 4px 12px rgba(200,240,0,0.4) !important;
-                    transform: translateY(-1px) !important;
-                }
-
                 @media (max-width: 768px) {
                     .jauter-nav-menu { display: none; }
                     .jauter-logo { font-size: 17px; }
@@ -246,41 +191,6 @@ function AppHeader() {
                     </div>
                 </div>
             </div>
-
-            {/* Contact Modal */}
-            <Modal
-                className="jauter-contact-modal"
-                title="Contact Us"
-                open={contactModal}
-                onCancel={() => setContactModal(false)}
-                footer={null}
-            >
-                <Form form={form} layout="vertical" onFinish={handleContactSubmit} style={{ marginTop: "8px" }}>
-                    <Form.Item name="name" label="Name" rules={[{ required: true, message: "Please enter your name" }]}>
-                        <Input placeholder="Your Name" />
-                    </Form.Item>
-                    <Form.Item name="phone" label="Phone"
-                        rules={[
-                            { required: true, message: "Please enter your phone number" },
-                            { pattern: /^[0-9]{10}$/, message: "Please enter a valid 10-digit phone number" },
-                        ]}>
-                        <Input placeholder="10-digit phone number" />
-                    </Form.Item>
-                    <Form.Item name="organizationName" label="Organization Name"
-                        rules={[{ required: true, message: "Please enter your organization name" }]}>
-                        <Input placeholder="Your Organization Name" />
-                    </Form.Item>
-                    <Form.Item name="email" label="Email (Optional)"
-                        rules={[{ type: "email", message: "Please enter a valid email address" }]}>
-                        <Input placeholder="your.email@example.com" />
-                    </Form.Item>
-                    <Form.Item>
-                        <Button className="jauter-contact-submit" htmlType="submit" block>
-                            Send Message •
-                        </Button>
-                    </Form.Item>
-                </Form>
-            </Modal>
         </>
     );
 }
