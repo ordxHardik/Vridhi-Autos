@@ -51,21 +51,18 @@ const CartPage = () => {
     }
     try {
       const auth = localStorage.getItem("auth");
-      if (!auth) {
-        message.error("Please login to create an invoice");
-        navigate("/login");
-        return;
-      }
       const newObject = {
         ...value,
         cartItems,
         subTotal,
         tax: 0,
         totalAmount: Number(subTotal),
-        userId: JSON.parse(auth)._id,
+        userId: auth ? JSON.parse(auth)._id : null,
       };
       await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/bills/add-bills`, newObject);
       message.success("Bill Generated");
+      dispatch({ type: "CLEAR_CART" });
+      localStorage.removeItem("cartItems");
       navigate("/bills");
     } catch (error) {
       message.error("Something went wrong");
@@ -645,6 +642,16 @@ const CartPage = () => {
             rules={[{ required: true, message: "Please enter contact number" }]}
           >
             <Input placeholder="Contact Number" />
+          </Form.Item>
+          <Form.Item
+            name="customerEmail"
+            label="Email Address"
+            rules={[
+              { required: true, message: "Please enter email address" },
+              { type: "email", message: "Please enter a valid email" }
+            ]}
+          >
+            <Input placeholder="customer@example.com" />
           </Form.Item>
           <Form.Item
             name="paymentMode"

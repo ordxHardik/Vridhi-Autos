@@ -302,7 +302,6 @@ const ContactPage = () => {
                                 <Form.Item
                                     name="subject"
                                     label="Subject"
-                                    rules={[{ required: true, message: "Please enter a subject" }]}
                                 >
                                     <Input placeholder="What is this about?" />
                                 </Form.Item>
@@ -310,10 +309,6 @@ const ContactPage = () => {
                                 <Form.Item
                                     name="message"
                                     label="Message"
-                                    rules={[
-                                        { required: true, message: "Please enter your message" },
-                                        { min: 10, message: "Message must be at least 10 characters" },
-                                    ]}
                                 >
                                     <Input.TextArea
                                         placeholder="Tell us what's on your mind..."
