@@ -1,13 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { Layout, Button } from "antd";
 import { useNavigate } from "react-router-dom";
-import { ShoppingCartOutlined, LoginOutlined, LogoutOutlined, PhoneOutlined } from "@ant-design/icons";
+import { ShoppingCartOutlined, LoginOutlined, LogoutOutlined, PhoneOutlined, HomeOutlined, UnorderedListOutlined, CloseOutlined } from "@ant-design/icons";
 
 const { Header } = Layout;
 
 function AppHeader() {
     const navigate = useNavigate();
     const isLoggedIn = localStorage.getItem("auth");
+    const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
     const handleLogout = () => {
         localStorage.removeItem("auth");
@@ -27,9 +28,21 @@ function AppHeader() {
                     from { transform: translateY(-100%); opacity: 0; }
                     to { transform: translateY(0); opacity: 1; }
                 }
+                @keyframes slideInFromRight {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @keyframes slideOutToRight {
+                    from { transform: translateX(0); opacity: 1; }
+                    to { transform: translateX(100%); opacity: 0; }
+                }
                 @keyframes fadeIn {
                     from { opacity: 0; }
                     to { opacity: 1; }
+                }
+                @keyframes fadeOut {
+                    from { opacity: 1; }
+                    to { opacity: 0; }
                 }
 
                 .jauter-header-wrap {
@@ -82,6 +95,11 @@ function AppHeader() {
                     font-weight: 900;
                     cursor: pointer;
                     line-height: 1;
+                    display: none;
+                    transition: transform 0.2s ease;
+                }
+                .jauter-menu-icon:active {
+                    transform: scale(0.95);
                 }
                 .jauter-nav-menu {
                     display: flex;
@@ -145,14 +163,106 @@ function AppHeader() {
                     box-shadow: 0 4px 12px rgba(124,58,237,0.35) !important;
                 }
 
+                /* Mobile Nav Drawer */
+                .jauter-mobile-nav-overlay {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(0, 0, 0, 0.5);
+                    z-index: 999;
+                    animation: fadeIn 0.3s ease;
+                }
+                .jauter-mobile-nav-overlay.hidden {
+                    animation: fadeOut 0.3s ease forwards;
+                }
+
+                .jauter-mobile-nav-drawer {
+                    position: fixed;
+                    top: 0;
+                    right: 0;
+                    bottom: 0;
+                    width: 220px;
+                    background: #c8f000;
+                    z-index: 1001;
+                    display: flex;
+                    flex-direction: column;
+                    padding: 16px 12px;
+                    box-shadow: -4px 0 16px rgba(0,0,0,0.15);
+                    animation: slideInFromRight 0.35s ease;
+                    overflow-y: auto;
+                }
+                .jauter-mobile-nav-drawer.closed {
+                    animation: slideOutToRight 0.35s ease forwards;
+                }
+
+                .jauter-mobile-nav-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 20px;
+                }
+                .jauter-mobile-nav-title {
+                    font-size: 16px;
+                    font-weight: 800;
+                    color: #111;
+                    margin: 0;
+                }
+                .jauter-mobile-nav-close {
+                    background: none;
+                    border: none;
+                    font-size: 20px;
+                    color: #111;
+                    cursor: pointer;
+                    padding: 4px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: transform 0.2s ease;
+                }
+                .jauter-mobile-nav-close:active {
+                    transform: scale(0.9);
+                }
+
+                .jauter-mobile-nav-items {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 8px;
+                    flex: 1;
+                }
+                .jauter-mobile-nav-item {
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    padding: 12px 14px;
+                    border-radius: 12px;
+                    background: rgba(0, 0, 0, 0.08);
+                    font-size: 15px;
+                    font-weight: 700;
+                    color: #111;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    border: 2px solid transparent;
+                }
+                .jauter-mobile-nav-item:active {
+                    background: rgba(0, 0, 0, 0.15);
+                    transform: scale(0.98);
+                }
+                .jauter-mobile-nav-item i {
+                    font-size: 18px;
+                }
+
                 @media (max-width: 768px) {
                     .jauter-nav-menu { display: none; }
                     .jauter-logo { font-size: 17px; }
+                    .jauter-menu-icon { display: inline-flex; }
                 }
                 @media (max-width: 480px) {
                     .jauter-header-wrap { padding: 8px 12px; }
                     .jauter-logo { font-size: 15px; }
                     .jauter-auth-btn span:not(.anticon) { display: none; }
+                    .jauter-mobile-nav-drawer { width: 200px; }
                 }
             `}</style>
 
@@ -188,6 +298,69 @@ function AppHeader() {
                         >
                             {isLoggedIn ? "Logout" : "Login"}
                         </Button>
+
+                        {/* Mobile Menu Icon */}
+                        <button
+                            className="jauter-menu-icon"
+                            onClick={() => setMobileNavOpen(!mobileNavOpen)}
+                            style={{ padding: 0, background: 'none', border: 'none', cursor: 'pointer' }}
+                        >
+                            ☰
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {/* Mobile Navigation Drawer */}
+            {mobileNavOpen && (
+                <div
+                    className="jauter-mobile-nav-overlay"
+                    onClick={() => setMobileNavOpen(false)}
+                />
+            )}
+            <div className={`jauter-mobile-nav-drawer ${!mobileNavOpen ? 'closed' : ''}`}>
+                <div className="jauter-mobile-nav-header">
+                    <h3 className="jauter-mobile-nav-title">Menu</h3>
+                    <button
+                        className="jauter-mobile-nav-close"
+                        onClick={() => setMobileNavOpen(false)}
+                    >
+                        <CloseOutlined />
+                    </button>
+                </div>
+
+                <div className="jauter-mobile-nav-items">
+                    <div
+                        className="jauter-mobile-nav-item"
+                        onClick={() => {
+                            navigate("/");
+                            setMobileNavOpen(false);
+                        }}
+                    >
+                        <HomeOutlined />
+                        <span>Home</span>
+                    </div>
+
+                    <div
+                        className="jauter-mobile-nav-item"
+                        onClick={() => {
+                            navigate("/items");
+                            setMobileNavOpen(false);
+                        }}
+                    >
+                        <UnorderedListOutlined />
+                        <span>Items</span>
+                    </div>
+
+                    <div
+                        className="jauter-mobile-nav-item"
+                        onClick={() => {
+                            navigate("/contact");
+                            setMobileNavOpen(false);
+                        }}
+                    >
+                        <PhoneOutlined />
+                        <span>Contact Us</span>
                     </div>
                 </div>
             </div>
