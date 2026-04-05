@@ -33,7 +33,7 @@ function AppHeader() {
                 }
 
                 .jauter-header-wrap {
-                    padding: 10px 20px;
+                    padding: 4px 20px;
                     background: #e8e8e8;
                     position: sticky;
                     top: 0;

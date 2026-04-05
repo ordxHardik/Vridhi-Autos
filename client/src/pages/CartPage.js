@@ -73,14 +73,14 @@ const CartPage = () => {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800;900&family=DM+Sans:wght@300;400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&display=swap');
 
         /* ── PAGE WRAPPER — white background ── */
         .jauter-cart-wrapper {
           background: #ffffff;
           min-height: 100vh;
           padding: 20px 16px 40px;
-          font-family: 'DM Sans', sans-serif;
+          font-family: 'Open Sans', sans-serif;
         }
 
         /* ── TOP NAV BAR ── */
@@ -97,7 +97,7 @@ const CartPage = () => {
           margin-right: auto;
         }
         .jauter-cart-logo {
-          font-family: 'Syne', sans-serif;
+          font-family: 'Open Sans', sans-serif;
           font-size: 18px;
           font-weight: 900;
           color: #c8f000;
@@ -124,7 +124,7 @@ const CartPage = () => {
           border-radius: 50px;
           height: 36px;
           padding: 0 16px;
-          font-family: 'Syne', sans-serif;
+          font-family: 'Open Sans', sans-serif;
           font-weight: 800;
           font-size: 13px;
           color: #111;
@@ -144,7 +144,7 @@ const CartPage = () => {
           color: #c8f000;
           border-radius: 50px;
           padding: 4px 12px;
-          font-family: 'Syne', sans-serif;
+          font-family: 'Open Sans', sans-serif;
           font-size: 13px;
           font-weight: 800;
         }
@@ -184,7 +184,7 @@ const CartPage = () => {
           z-index: 1;
         }
         .jauter-hero-title {
-          font-family: 'Syne', sans-serif;
+          font-family: 'Open Sans', sans-serif;
           font-size: 26px;
           font-weight: 900;
           color: #111;
@@ -228,7 +228,7 @@ const CartPage = () => {
 
         /* ── SECTION LABEL ── */
         .jauter-section-title {
-          font-family: 'Syne', sans-serif;
+          font-family: 'Open Sans', sans-serif;
           font-size: 11px;
           font-weight: 800;
           color: #111;
@@ -272,7 +272,7 @@ const CartPage = () => {
           justify-content: center;
         }
         .jauter-item-name {
-          font-family: 'Syne', sans-serif;
+          font-family: 'Open Sans', sans-serif;
           font-size: 14px;
           font-weight: 700;
           color: #111;
@@ -307,7 +307,7 @@ const CartPage = () => {
         }
         .jauter-qty-btn:hover { transform: scale(1.2); }
         .jauter-qty-num {
-          font-family: 'Syne', sans-serif;
+          font-family: 'Open Sans', sans-serif;
           font-weight: 900;
           font-size: 14px;
           min-width: 18px;
@@ -390,13 +390,13 @@ const CartPage = () => {
           margin-top: 10px;
         }
         .jauter-grand-label {
-          font-family: 'Syne', sans-serif;
+          font-family: 'Open Sans', sans-serif;
           font-size: 15px;
           font-weight: 700;
           color: #fff;
         }
         .jauter-grand-amount {
-          font-family: 'Syne', sans-serif;
+          font-family: 'Open Sans', sans-serif;
           font-size: 22px;
           font-weight: 900;
           color: #c8f000;
@@ -409,7 +409,7 @@ const CartPage = () => {
           border: none !important;
           border-radius: 50px !important;
           height: 50px !important;
-          font-family: 'Syne', sans-serif !important;
+          font-family: 'Open Sans', sans-serif !important;
           font-weight: 900 !important;
           font-size: 15px !important;
           color: #111 !important;
@@ -448,7 +448,7 @@ const CartPage = () => {
           margin: 0 !important;
         }
         .jauter-modal .ant-modal-title {
-          font-family: 'Syne', sans-serif !important;
+          font-family: 'Open Sans', sans-serif !important;
           color: #c8f000 !important;
           font-weight: 900 !important;
           font-size: 17px !important;
@@ -483,7 +483,7 @@ const CartPage = () => {
           border-top: 1px solid #e0e0e0;
           padding-top: 10px;
           margin-top: 6px;
-          font-family: 'Syne', sans-serif;
+          font-family: 'Open Sans', sans-serif;
           font-weight: 800;
           font-size: 15px;
           color: #111;
@@ -495,7 +495,7 @@ const CartPage = () => {
           border: none !important;
           border-radius: 50px !important;
           height: 48px !important;
-          font-family: 'Syne', sans-serif !important;
+          font-family: 'Open Sans', sans-serif !important;
           font-weight: 900 !important;
           font-size: 15px !important;
           color: #111 !important;

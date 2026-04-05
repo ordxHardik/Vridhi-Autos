@@ -155,9 +155,10 @@ const DefaultLayout = ({ children }) => {
                     transition: all 0.2s ease;
                     display: flex;
                     align-items: center;
+                    background: #c8f000;
                 }
                 .jauter-trigger:hover {
-                    background: #e0e0e0;
+                    background: #b5e400;
                     color: #111;
                 }
                 .jauter-cart-wrapper {
@@ -227,14 +228,20 @@ const DefaultLayout = ({ children }) => {
                     collapsedWidth={80}
                 >
                     <div className="jauter-sider-logo">
-                        {!collapsed ? (
-                            <div className="jauter-sider-logo-pill">
-                                <span className="jauter-sider-logo-dot" />
-                                Vridhi Autos
-                            </div>
-                        ) : (
-                            <div className="jauter-sider-logo-collapsed">VA</div>
-                        )}
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                            {!collapsed ? (
+                                <div className="jauter-sider-logo-pill">
+                                    <span className="jauter-sider-logo-dot" />
+                                    Vridhi Autos
+                                </div>
+                            ) : (
+                                <div className="jauter-sider-logo-collapsed">VA</div>
+                            )}
+                            {React.createElement(
+                                collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
+                                { className: "jauter-trigger", onClick: toggle, style: { marginLeft: collapsed ? '0' : 'auto' } }
+                            )}
+                        </div>
                     </div>
 
                     <Menu mode="inline" defaultSelectedKeys={[window.location.pathname]}>
@@ -263,24 +270,6 @@ const DefaultLayout = ({ children }) => {
             )}
 
             <Layout className="site-layout">
-                <Header className="jauter-layout-header">
-                    {isLoggedIn && (
-                        React.createElement(
-                            collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
-                            { className: "jauter-trigger", onClick: toggle }
-                        )
-                    )}
-                    {isLoggedIn && (
-                        <div className="jauter-cart-wrapper" onClick={() => navigate("/cart")}>
-                            <ShoppingCartOutlined />
-                            Cart
-                            {cartItems.length > 0 && (
-                                <span className="jauter-cart-count">{cartItems.length}</span>
-                            )}
-                        </div>
-                    )}
-                </Header>
-
                 <Content className="jauter-content">
                     {children}
                 </Content>

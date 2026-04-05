@@ -63,7 +63,7 @@ const Homepage = () => {
           .hp-hero {
             background: #e8e8e8;
             border-radius: 24px;
-            margin: 0 0 24px 0;
+            margin: -8px 0 24px 0;
             padding: 40px 24px 32px;
             text-align: center;
             background-image:
@@ -95,7 +95,7 @@ const Homepage = () => {
           }
 
           .hp-hero-sub {
-            font-size: 15px;
+            font-size: clamp(13px, 4vw, 15px);
             color: #666;
             margin-bottom: 24px;
           }
@@ -128,7 +128,7 @@ const Homepage = () => {
 
           /* Section title */
           .hp-section-title {
-            font-size: 20px;
+            font-size: clamp(18px, 5vw, 20px);
             font-weight: 900;
             color: #111;
             margin-bottom: 16px;
@@ -144,6 +144,7 @@ const Homepage = () => {
             scrollbar-width: none;
             -ms-overflow-style: none;
             margin-bottom: 24px;
+            padding: 0 0 8px 0;
           }
           .hp-category-scroll::-webkit-scrollbar { display: none; }
 
@@ -182,7 +183,7 @@ const Homepage = () => {
             width: 100%;
             padding: 10px 6px;
             text-align: center;
-            font-size: 13px;
+            font-size: clamp(11px, 2vw, 13px);
             font-weight: 700;
             color: #111;
             background: #fff;
@@ -206,11 +207,11 @@ const Homepage = () => {
           /* Empty state */
           .hp-empty {
             text-align: center;
-            padding: 60px 20px;
+            padding: clamp(40px, 10vw, 60px) 20px;
             background: #fff;
             border-radius: 20px;
             color: #aaa;
-            font-size: 15px;
+            font-size: clamp(13px, 3vw, 15px);
           }
 
           /* ===== REVIEWS SECTION ===== */
@@ -226,14 +227,14 @@ const Homepage = () => {
           }
 
           .hp-reviews-title {
-            font-size: 28px;
+            font-size: clamp(24px, 6vw, 28px);
             font-weight: 900;
             color: #111;
             margin-bottom: 8px;
           }
 
           .hp-reviews-subtitle {
-            font-size: 14px;
+            font-size: clamp(12px, 3vw, 14px);
             color: #888;
           }
 
@@ -313,14 +314,14 @@ const Homepage = () => {
           }
 
           .hp-review-name {
-            font-size: 14px;
+            font-size: clamp(13px, 2.5vw, 14px);
             font-weight: 800;
             color: #111;
             margin-bottom: 4px;
           }
 
           .hp-review-date {
-            font-size: 12px;
+            font-size: clamp(11px, 2vw, 12px);
             color: #aaa;
           }
 
@@ -328,7 +329,7 @@ const Homepage = () => {
           .hp-review-stars {
             display: flex;
             gap: 4px;
-            font-size: 16px;
+            font-size: clamp(14px, 3vw, 16px);
           }
 
           .hp-review-stars .star {
@@ -337,7 +338,7 @@ const Homepage = () => {
 
           /* Review text */
           .hp-review-text {
-            font-size: 14px;
+            font-size: clamp(12px, 2.5vw, 14px);
             line-height: 1.6;
             color: #666;
             flex: 1;
@@ -381,42 +382,188 @@ const Homepage = () => {
           }
 
           /* Responsive — on small screens collapse to vertical single column */
-          @media (max-width: 768px) {
+          @media (max-width: 1024px) {
             .hp-items-grid {
-              grid-template-columns: repeat(2, 1fr);
-              gap: 12px;
-            }
-            .hp-reviews-title {
-              font-size: 22px;
-            }
-            /* Keep horizontal scroll working but allow it */
-            .hp-reviews-grid {
-              padding: 50px 4px 4px;
+              grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+              gap: 14px;
             }
             .hp-review-card {
-              width: 220px;
+              width: 240px;
+              padding: 20px;
             }
           }
 
-          @media (max-width: 480px) {
-            .hp-reviews-grid {
+          @media (max-width: 768px) {
+            .hp-wrapper {
+              padding: 0 0 30px 0;
+            }
+            .hp-hero {
+              margin: -8px 0 20px 0;
+              padding: 30px 20px 24px;
+              border-radius: 18px;
+            }
+            .hp-hero-icon-wrap {
+              width: 60px;
+              height: 60px;
+              font-size: 28px;
+              margin-bottom: 16px;
+            }
+            .hp-hero-btn {
+              display: flex;
+              width: 100%;
+              justify-content: center;
+              padding: 12px 24px;
+              font-size: 14px;
+            }
+            .hp-cat-card {
+              width: 100px;
+            }
+            .hp-cat-img {
+              height: 75px;
+            }
+            .hp-items-grid {
+              grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
               gap: 12px;
+              padding: 0 2px;
+            }
+            .hp-reviews-title {
+              font-size: clamp(20px, 6vw, 26px);
+            }
+            .hp-reviews-section {
+              margin-top: 40px;
+              padding-top: 30px;
             }
             .hp-review-card {
               width: 200px;
-              padding: 18px;
+              padding: 16px;
             }
-            /* Reduce stagger on very small screens */
-            .hp-review-card:nth-child(1) { margin-bottom: 40px; }
-            .hp-review-card:nth-child(2) { margin-bottom: 20px; }
+            .hp-review-card:nth-child(1) { margin-bottom: 45px; }
+            .hp-review-card:nth-child(2) { margin-bottom: 22px; }
             .hp-review-card:nth-child(3) { margin-bottom: 0px; }
-            .hp-review-card:nth-child(4) { margin-bottom: 20px; }
-            .hp-review-card:nth-child(5) { margin-bottom: 40px; }
+            .hp-review-card:nth-child(4) { margin-bottom: 22px; }
+            .hp-review-card:nth-child(5) { margin-bottom: 45px; }
+            .hp-reviews-grid {
+              padding: 45px 4px 4px;
+              gap: 12px;
+            }
           }
 
-          @media (max-width: 400px) {
-            .hp-cat-card { width: 100px; }
-            .hp-cat-img { height: 70px; }
+          @media (max-width: 600px) {
+            .hp-hero {
+              padding: 24px 16px 20px;
+              margin: -8px 0 18px 0;
+            }
+            .hp-hero-btn {
+              display: flex;
+              width: 100%;
+              justify-content: center;
+              padding: 11px 20px;
+            }
+            .hp-cat-card {
+              width: 90px;
+              margin-right: 10px;
+            }
+            .hp-cat-img {
+              height: 65px;
+            }
+            .hp-items-grid {
+              grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+              gap: 10px;
+            }
+            .hp-review-card {
+              width: 170px;
+              padding: 14px;
+            }
+            .hp-review-card:nth-child(1) { margin-bottom: 35px; }
+            .hp-review-card:nth-child(2) { margin-bottom: 17px; }
+            .hp-review-card:nth-child(3) { margin-bottom: 0px; }
+            .hp-review-card:nth-child(4) { margin-bottom: 17px; }
+            .hp-review-card:nth-child(5) { margin-bottom: 35px; }
+          }
+
+          @media (max-width: 480px) {
+            .hp-wrapper {
+              padding: 0 0 25px 0;
+            }
+            .hp-hero {
+              padding: 20px 14px 18px;
+              margin: -8px 0 16px 0;
+              border-radius: 16px;
+            }
+            .hp-hero-icon-wrap {
+              width: 52px;
+              height: 52px;
+              font-size: 24px;
+              margin-bottom: 12px;
+            }
+            .hp-hero-btn {
+              display: flex;
+              width: 100%;
+              justify-content: center;
+            }
+            .hp-reviews-grid {
+              gap: 10px;
+              padding: 35px 2px 2px;
+            }
+            .hp-review-card {
+              width: 150px;
+              padding: 12px;
+            }
+            .hp-review-card:nth-child(1) { margin-bottom: 30px; }
+            .hp-review-card:nth-child(2) { margin-bottom: 15px; }
+            .hp-review-card:nth-child(3) { margin-bottom: 0px; }
+            .hp-review-card:nth-child(4) { margin-bottom: 15px; }
+            .hp-review-card:nth-child(5) { margin-bottom: 30px; }
+            .hp-review-header {
+              gap: 10px;
+            }
+            .hp-review-avatar {
+              width: 40px;
+              height: 40px;
+              font-size: 14px;
+            }
+            .hp-cat-card {
+              width: 80px;
+              margin-right: 8px;
+            }
+            .hp-cat-img {
+              height: 55px;
+            }
+            .hp-items-grid {
+              grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
+              gap: 8px;
+              padding: 0 1px;
+            }
+            .hp-review-helpful {
+              font-size: 11px;
+            }
+            .hp-review-helpful button {
+              font-size: 11px;
+            }
+          }
+
+          @media (max-width: 360px) {
+            .hp-hero {
+              padding: 16px 12px 16px;
+              margin: -8px 0 14px 0;
+            }
+            .hp-hero-btn {
+              display: flex;
+              width: 100%;
+              justify-content: center;
+            }
+            .hp-cat-card {
+              width: 70px;
+              margin-right: 6px;
+            }
+            .hp-items-grid {
+              grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+              gap: 6px;
+            }
+            .hp-review-card {
+              width: 130px;
+              padding: 10px;
+            }
           }
         `}</style>
 

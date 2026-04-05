@@ -26,8 +26,8 @@ const ItemList = ({ item }) => {
                     background: #ffffff;
                     border-radius: 20px;
                     overflow: hidden;
-                    width: 220px;
-                    margin: 8px;
+                    width: 100%;
+                    margin: 0;
                     box-shadow: 0 2px 12px rgba(0,0,0,0.07);
                     transition: transform 0.25s ease, box-shadow 0.25s ease;
                     animation: cardPop 0.35s ease;
@@ -75,14 +75,18 @@ const ItemList = ({ item }) => {
                     width: 100%;
                     border-radius: 50px !important;
                     font-weight: 700 !important;
-                    height: 38px !important;
+                    height: auto !important;
+                    min-height: clamp(32px, 8vw, 38px) !important;
                     border: none !important;
-                    font-size: 13px !important;
+                    font-size: clamp(11px, 2.5vw, 13px) !important;
                     transition: all 0.2s ease !important;
                     display: flex !important;
                     align-items: center !important;
                     justify-content: center !important;
-                    gap: 6px !important;
+                    gap: 4px !important;
+                    flex-wrap: wrap !important;
+                    padding: 6px 10px !important;
+                    line-height: 1.2 !important;
                 }
                 .jauter-add-btn:not(:disabled) {
                     background: #111 !important;
@@ -100,8 +104,41 @@ const ItemList = ({ item }) => {
                     cursor: not-allowed;
                 }
 
+                @media (max-width: 768px) {
+                    .jauter-add-btn {
+                        font-size: clamp(10px, 2.5vw, 12px) !important;
+                        min-height: clamp(30px, 7vw, 36px) !important;
+                        gap: 3px !important;
+                        padding: 5px 8px !important;
+                    }
+                    .jauter-add-btn .anticon {
+                        font-size: 13px !important;
+                    }
+                }
+
                 @media (max-width: 480px) {
-                    .jauter-item-card { width: 100%; margin: 6px 0; }
+                    .jauter-item-card { margin: 0; }
+                    .jauter-add-btn {
+                        font-size: clamp(9px, 2vw, 11px) !important;
+                        min-height: clamp(28px, 6vw, 34px) !important;
+                        gap: 3px !important;
+                        padding: 4px 6px !important;
+                    }
+                    .jauter-add-btn .anticon {
+                        font-size: 12px !important;
+                    }
+                }
+
+                @media (max-width: 360px) {
+                    .jauter-add-btn {
+                        font-size: clamp(8px, 1.8vw, 10px) !important;
+                        min-height: clamp(26px, 5vw, 32px) !important;
+                        gap: 2px !important;
+                        padding: 3px 5px !important;
+                    }
+                    .jauter-add-btn .anticon {
+                        font-size: 11px !important;
+                    }
                 }
             `}</style>
 
