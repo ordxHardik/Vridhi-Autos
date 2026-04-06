@@ -20,9 +20,11 @@ const BillsPage = () => {
       const { data } = await axios.get(
         `${process.env.REACT_APP_SERVER_URL}/api/bills/get-bills`
       );
-      setBillsData(data);
+      // Sort bills by date in descending order (newest first)
+      const sortedData = data.sort((a, b) => new Date(b.date) - new Date(a.date));
+      setBillsData(sortedData);
       dispatch({ type: "HIDE_LOADING" });
-      console.log(data);
+      console.log(sortedData);
     } catch (error) {
       dispatch({ type: "HIDE_LOADING" });
       console.log(error);
@@ -50,6 +52,12 @@ const BillsPage = () => {
       dataIndex: "customerName",
     },
     {
+      title: "Organization",
+      dataIndex: "organizationName",
+      render: (text) => text || "-",
+      responsive: ["sm"],
+    },
+    {
       title: "Contact No",
       dataIndex: "customerNumber",
       responsive: ["sm"],
@@ -70,6 +78,22 @@ const BillsPage = () => {
       title: "Total",
       dataIndex: "totalAmount",
       render: (v) => <strong>₹ {v}</strong>,
+    },
+    {
+      title: "Order Date",
+      dataIndex: "date",
+      responsive: ["md"],
+      render: (date) => {
+        if (!date) return "-";
+        const orderDate = new Date(date);
+        return orderDate.toLocaleDateString("en-IN", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        });
+      },
+      sorter: (a, b) => new Date(b.date) - new Date(a.date),
+      defaultSortOrder: "descend",
     },
     {
       title: "View",

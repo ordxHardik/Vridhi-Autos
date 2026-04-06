@@ -6,18 +6,28 @@ const loginController = async (req, res) => {
   try {
     const { userId, password } = req.body;
 
+    // Validate required fields
+    if (!userId || !password) {
+      return res.status(400).json({
+        message: "Missing required fields: userId and password",
+      });
+    }
+
     const user = await userModal.findOne({ userId, password, verified: true });
 
     if (user) {
       res.status(200).send(user);
     } else {
       res.status(400).json({
-        message: "Login Fail",
-        user,
+        message: "Login Fail - Invalid credentials or user not verified",
       });
     }
   } catch (error) {
-    console.log(error);
+    console.log("Login error:", error);
+    res.status(500).json({
+      message: "Server error during login",
+      error: error.message,
+    });
   }
 };
 

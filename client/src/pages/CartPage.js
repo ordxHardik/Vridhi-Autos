@@ -58,12 +58,13 @@ const CartPage = () => {
         tax: 0,
         totalAmount: Number(subTotal),
         userId: auth ? JSON.parse(auth)._id : null,
+        date: new Date().toISOString(),
       };
       await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/bills/add-bills`, newObject);
       message.success("Bill Generated");
       dispatch({ type: "CLEAR_CART" });
       localStorage.removeItem("cartItems");
-      navigate("/bills");
+      navigate("/");
     } catch (error) {
       message.error("Something went wrong");
       console.log(error);
@@ -635,6 +636,13 @@ const CartPage = () => {
             rules={[{ required: true, message: "Please enter customer name" }]}
           >
             <Input placeholder="Customer Name" />
+          </Form.Item>
+          <Form.Item
+            name="organizationName"
+            label="Organization Name"
+            rules={[{ required: true, message: "Please enter organization name" }]}
+          >
+            <Input placeholder="Organization / Company Name" />
           </Form.Item>
           <Form.Item
             name="customerNumber"
