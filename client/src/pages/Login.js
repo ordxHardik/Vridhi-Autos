@@ -198,9 +198,9 @@ const Login = () => {
                 <Input.Password placeholder="Enter your password" />
               </Form.Item>
 
-              <div className="auth-test-creds">
+              {/* <div className="auth-test-creds">
                 Test — UserId: <strong>123</strong> | Password: <strong>123</strong>
-              </div>
+              </div> */}
 
               <div className="d-flex justify-content-between align-items-center" style={{ gap: "12px" }}>
                 <p className="auth-footer-link mb-0">

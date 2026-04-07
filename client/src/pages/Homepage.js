@@ -4,6 +4,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import ItemList from "../components/ItemList";
 import Header from "../components/Header";
+import Navbar from "../components/Navbar";
 
 const TICKER_ITEMS = [
   "🚗 Drive Better with Premium Car Accessories",
@@ -694,6 +695,7 @@ const Homepage = () => {
           </div>
         </div>
       </DefaultLayout>
+      <Navbar />
     </>
   );
 };

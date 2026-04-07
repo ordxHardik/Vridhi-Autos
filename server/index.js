@@ -26,7 +26,11 @@ app.use(cors());
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(morgan("dev"));
+
+// Enable logging only in development mode
+if (process.env.NODE_ENV === "development" || !process.env.NODE_ENV) {
+  app.use(morgan("dev"));
+}
 
 // Serve static files from uploads directory
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
