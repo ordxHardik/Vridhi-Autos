@@ -4,7 +4,6 @@ import CartPage from "./pages/CartPage";
 import Homepage from "./pages/Homepage";
 import ItemPage from "./pages/ItemPage";
 import Login from "./pages/Login";
-import Register from "./pages/Register";
 import BillsPage from "./pages/BillsPage";
 import CutomerPage from "./pages/CutomerPage";
 import ContactPage from "./pages/ContactPage";

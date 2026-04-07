@@ -4,12 +4,12 @@ import { Layout, Menu } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import {
     MenuUnfoldOutlined, MenuFoldOutlined, UserOutlined, LogoutOutlined,
-    HomeOutlined, CopyOutlined, UnorderedListOutlined, ShoppingCartOutlined, GithubOutlined,
+    HomeOutlined, CopyOutlined, UnorderedListOutlined, GithubOutlined,
 } from "@ant-design/icons";
 import "../styles/DefaultLayout.css";
 import Spinner from "./Spinner";
 
-const { Header, Sider, Content } = Layout;
+const { Sider, Content } = Layout;
 
 const DefaultLayout = ({ children }) => {
     const navigate = useNavigate();

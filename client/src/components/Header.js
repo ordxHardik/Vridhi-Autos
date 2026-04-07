@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import { Layout, Button } from "antd";
+import { Button } from "antd";
 import { useNavigate } from "react-router-dom";
 import { ShoppingCartOutlined, LoginOutlined, LogoutOutlined, PhoneOutlined, HomeOutlined, UnorderedListOutlined, CloseOutlined } from "@ant-design/icons";
-
-const { Header } = Layout;
 
 function AppHeader() {
     const navigate = useNavigate();
