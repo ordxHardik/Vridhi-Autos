@@ -31,9 +31,9 @@ const CutomerPage = () => {
   }, []);
 
   const columns = [
-    { 
-      title: "ID", 
-      dataIndex: "_id", 
+    {
+      title: "ID",
+      dataIndex: "_id",
       width: 120,
       ellipsis: true,
     },
@@ -48,8 +48,8 @@ const CutomerPage = () => {
       render: (text) => text || "-",
       width: 140,
     },
-    { 
-      title: "Contact No", 
+    {
+      title: "Contact No",
       dataIndex: "customerNumber",
       width: 130,
     },
