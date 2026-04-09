@@ -4,19 +4,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { ShoppingCartOutlined, CheckOutlined } from "@ant-design/icons";
 
 const ItemList = ({ item }) => {
-  const dispatch = useDispatch();
-  const { cartItems } = useSelector((state) => state.rootReducer);
-  const isItemInCart = cartItems.some((cartItem) => cartItem._id === item._id);
+    const dispatch = useDispatch();
+    const { cartItems } = useSelector((state) => state.rootReducer);
+    const isItemInCart = cartItems.some((cartItem) => cartItem._id === item._id);
 
-  const handleAddToCart = () => {
-    if (!isItemInCart) {
-      dispatch({ type: "ADD_TO_CART", payload: { ...item, quantity: 1 } });
-    }
-  };
+    const handleAddToCart = () => {
+        if (!isItemInCart) {
+            dispatch({ type: "ADD_TO_CART", payload: { ...item, quantity: 1 } });
+        }
+    };
 
-  return (
-    <div>
-      <style>{`
+    return (
+        <div>
+            <style>{`
                 @keyframes cardPop {
                     from { opacity: 0; transform: scale(0.95) translateY(8px); }
                     to { opacity: 1; transform: scale(1) translateY(0); }
@@ -142,30 +142,30 @@ const ItemList = ({ item }) => {
                 }
             `}</style>
 
-      <div className="jauter-item-card">
-        <div className="jauter-item-img-wrap">
-          <img
-            alt={item.name}
-            src={`${process.env.REACT_APP_SERVER_URL}${item.image}`}
-          />
+            <div className="jauter-item-card">
+                <div className="jauter-item-img-wrap">
+                    <img
+                        alt={item.name}
+                        src={item.image.startsWith('http') ? item.image : `${process.env.REACT_APP_SERVER_URL}${item.image}`}
+                    />
+                </div>
+                <div className="jauter-item-body">
+                    <div className="jauter-item-name">{item.name}</div>
+                    {item.price && (
+                        <div className="jauter-item-price">₹ {item.price}</div>
+                    )}
+                    <Button
+                        className="jauter-add-btn"
+                        onClick={handleAddToCart}
+                        disabled={isItemInCart}
+                        icon={isItemInCart ? <CheckOutlined /> : <ShoppingCartOutlined />}
+                    >
+                        {isItemInCart ? "Added to Cart" : "Add to Invoice"}
+                    </Button>
+                </div>
+            </div>
         </div>
-        <div className="jauter-item-body">
-          <div className="jauter-item-name">{item.name}</div>
-          {item.price && (
-            <div className="jauter-item-price">₹ {item.price}</div>
-          )}
-          <Button
-            className="jauter-add-btn"
-            onClick={handleAddToCart}
-            disabled={isItemInCart}
-            icon={isItemInCart ? <CheckOutlined /> : <ShoppingCartOutlined />}
-          >
-            {isItemInCart ? "Added to Cart" : "Add to Invoice"}
-          </Button>
-        </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default ItemList;

@@ -15,10 +15,10 @@ const addItemController = async (req, res) => {
   try {
     const { name, price, category } = req.body;
 
-    // Get image path from uploaded file
+    // Get image URL from Cloudinary upload
     let imagePath = '';
     if (req.file) {
-      imagePath = `/uploads/${req.file.filename}`;
+      imagePath = req.file.secure_url; // Cloudinary provides secure_url
     }
 
     const newItem = new itemModel({
@@ -43,9 +43,9 @@ const editItemController = async (req, res) => {
 
     let updateData = { ...req.body };
 
-    // If a new file is uploaded, update the image path
+    // If a new file is uploaded, update the image URL from Cloudinary
     if (req.file) {
-      updateData.image = `/uploads/${req.file.filename}`;
+      updateData.image = req.file.secure_url;
     }
 
     await itemModel.findOneAndUpdate({ _id: itemId }, updateData, {
