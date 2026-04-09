@@ -19,6 +19,11 @@ const ItemPage = () => {
   const [itemImage, setItemImage] = useState(null);
   const [itemImagePreview, setItemImagePreview] = useState("");
   const [categoryImagePreview, setCategoryImagePreview] = useState("");
+  const [editingCategory, setEditingCategory] = useState(null);
+  const [editCategoryModalOpen, setEditCategoryModalOpen] = useState(false);
+  const [editCategoryName, setEditCategoryName] = useState("");
+  const [editCategoryImage, setEditCategoryImage] = useState(null);
+  const [editCategoryImagePreview, setEditCategoryImagePreview] = useState("");
   const [form] = Form.useForm();
   const isLoggedIn = localStorage.getItem("auth");
 
@@ -103,7 +108,9 @@ const ItemPage = () => {
               alt={name}
               style={{ width: 48, height: 48, borderRadius: 10, objectFit: "cover", background: "#f5f5f5" }}
               onError={(e) => {
-                e.target.src = 'https://via.placeholder.com/48?text=No+Image';
+                if (!e.target.src.includes('placeholder')) {
+                  e.target.src = 'https://via.placeholder.com/48?text=No+Image';
+                }
               }}
             />
             <span style={{ fontWeight: 700, color: "#111" }}>{name}</span>
@@ -240,6 +247,81 @@ const ItemPage = () => {
     } else {
       message.error("Please enter a category name");
     }
+  };
+
+  const handleEditCategory = (category) => {
+    setEditingCategory(category);
+    setEditCategoryName(category.name);
+    setEditCategoryImagePreview(category.image);
+    setEditCategoryImage(null);
+    setEditCategoryModalOpen(true);
+  };
+
+  const handleUpdateCategory = async () => {
+    if (!checkLogin()) return;
+    if (!editCategoryName.trim()) {
+      message.error("Please enter a category name");
+      return;
+    }
+
+    try {
+      dispatch({ type: "SHOW_LOADING" });
+      const formData = new FormData();
+      formData.append("categoryId", editingCategory._id);
+      formData.append("name", editCategoryName);
+      if (editCategoryImage) {
+        formData.append("image", editCategoryImage);
+      }
+
+      const response = await axios.post(
+        `${process.env.REACT_APP_SERVER_URL}/api/categories/update-category`,
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+
+      message.success("Category updated successfully");
+      setEditCategoryModalOpen(false);
+      setEditingCategory(null);
+
+      // Refresh categories
+      const { data } = await axios.get(`${process.env.REACT_APP_SERVER_URL}/api/categories/get-categories`);
+      setCategories(data);
+      dispatch({ type: "HIDE_LOADING" });
+    } catch (error) {
+      dispatch({ type: "HIDE_LOADING" });
+      message.error(error.response?.data?.message || "Failed to update category");
+      console.log(error);
+    }
+  };
+
+  const handleDeleteCategory = (categoryId, categoryName) => {
+    if (!checkLogin()) return;
+    Modal.confirm({
+      title: "Delete Category",
+      content: `Are you sure you want to delete "${categoryName}"?`,
+      okText: "Yes",
+      cancelText: "No",
+      okType: "danger",
+      onOk: async () => {
+        try {
+          dispatch({ type: "SHOW_LOADING" });
+          await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/categories/delete-category`, {
+            categoryId,
+          });
+
+          message.success("Category deleted successfully");
+
+          // Refresh categories
+          const { data } = await axios.get(`${process.env.REACT_APP_SERVER_URL}/api/categories/get-categories`);
+          setCategories(data);
+          dispatch({ type: "HIDE_LOADING" });
+        } catch (error) {
+          dispatch({ type: "HIDE_LOADING" });
+          message.error(error.response?.data?.message || "Failed to delete category");
+          console.log(error);
+        }
+      },
+    });
   };
 
   return (
@@ -430,6 +512,131 @@ const ItemPage = () => {
             .item-hero-actions { width: 100%; }
             .item-hero-btn { flex: 1; text-align: center; }
           }
+
+          /* Categories Section */
+          .cat-section {
+            margin-bottom: 28px;
+          }
+          .cat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+          }
+          .cat-header h2 {
+            font-size: 18px;
+            font-weight: 800;
+            color: #111;
+            margin: 0;
+          }
+          .cat-grid {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding-bottom: 8px;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+          }
+          .cat-grid::-webkit-scrollbar {
+            height: 6px;
+          }
+          .cat-grid::-webkit-scrollbar-track {
+            background: transparent;
+          }
+          .cat-grid::-webkit-scrollbar-thumb {
+            background: #c8f000;
+            border-radius: 3px;
+          }
+          .cat-grid::-webkit-scrollbar-thumb:hover {
+            background: #b8e000;
+          }
+          .cat-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            height: 180px;
+            min-width: 140px;
+            flex-shrink: 0;
+          }
+          .cat-card:hover {
+            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+            transform: translateY(-4px);
+          }
+          .cat-card-img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            background: #f5f5f5;
+          }
+          .cat-card-info {
+            padding: 10px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+          }
+          .cat-card-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: #111;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 6px;
+          }
+          .cat-card-actions {
+            display: flex;
+            gap: 6px;
+          }
+          .cat-action-btn {
+            flex: 1;
+            padding: 4px 8px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+          }
+          .cat-action-btn.edit {
+            background: #c8f000;
+            color: #111;
+          }
+          .cat-action-btn.edit:hover {
+            background: #b8e000;
+          }
+          .cat-action-btn.delete {
+            background: #ff4d4f;
+            color: white;
+          }
+          .cat-action-btn.delete:hover {
+            background: #ff7875;
+          }
+
+          @media (max-width: 768px) {
+            .cat-card { height: 160px; min-width: 130px; }
+            .cat-card-img { height: 80px; }
+            .cat-card-info { padding: 8px; }
+            .cat-card-name { font-size: 12px; }
+            .cat-action-btn { font-size: 11px; }
+          }
+
+          @media (max-width: 480px) {
+            .cat-card { height: 150px; min-width: 120px; }
+            .cat-card-img { height: 75px; }
+            .cat-card-info { padding: 6px; }
+            .cat-card-name { font-size: 11px; }
+            .cat-action-btn { font-size: 10px; padding: 2px 4px; }
+          }
         `}</style>
 
         <div className="item-wrapper">
@@ -464,7 +671,62 @@ const ItemPage = () => {
             </div>
           </div>
 
-          {/* Table */}
+          {/* Categories Section */}
+          {categories && categories.length > 0 && (
+            <div className="cat-section">
+              <div className="cat-header">
+                <h2>Categories</h2>
+              </div>
+              <div className="cat-grid">
+                {categories.map((category) => {
+                  const getImageUrl = () => {
+                    if (!category.image) return 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100"%3E%3Crect fill="%23f0f0f0" width="100" height="100"/%3E%3C/svg%3E';
+                    let url = category.image;
+                    url = url.replace(/^(https?):\/+/, '$1://');
+                    if (url.startsWith('http://') || url.startsWith('https://')) return url;
+                    if (url.startsWith('/')) return `${process.env.REACT_APP_SERVER_URL}${url}`;
+                    return `${process.env.REACT_APP_SERVER_URL}/${url}`;
+                  };
+
+                  return (
+                    <div key={category._id} className="cat-card">
+                      <img
+                        src={getImageUrl()}
+                        alt={category.name}
+                        className="cat-card-img"
+                        onError={(e) => {
+                          if (!e.target.src.includes('data:image')) {
+                            e.target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100"%3E%3Crect fill="%23f0f0f0" width="100" height="100"/%3E%3C/svg%3E';
+                          }
+                        }}
+                      />
+                      <div className="cat-card-info">
+                        <div className="cat-card-name">{category.name}</div>
+                        <div className="cat-card-actions">
+                          <button
+                            className="cat-action-btn edit"
+                            onClick={() => handleEditCategory(category)}
+                            title="Edit"
+                          >
+                            <EditOutlined />
+                          </button>
+                          <button
+                            className="cat-action-btn delete"
+                            onClick={() => handleDeleteCategory(category._id, category.name)}
+                            title="Delete"
+                          >
+                            <DeleteOutlined />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Items Table */}
           <div className="item-table-card">
             <Table
               columns={columns}
@@ -589,6 +851,84 @@ const ItemPage = () => {
                 </Button>
                 <Button className="item-modal-save-btn" type="primary" onClick={handleAddCategory}>
                   Add Category
+                </Button>
+              </div>
+            </Form>
+          </Modal>
+        )}
+
+        {/* Edit Category Modal */}
+        {editingCategory && (
+          <Modal
+            className="item-modal"
+            title="Edit Category"
+            open={editCategoryModalOpen}
+            onCancel={() => {
+              setEditCategoryModalOpen(false);
+              setEditingCategory(null);
+              setEditCategoryName("");
+              setEditCategoryImage(null);
+              setEditCategoryImagePreview("");
+            }}
+            footer={false}
+          >
+            <Form layout="vertical">
+              <Form.Item label="Category Name">
+                <Input
+                  placeholder="Enter category name"
+                  value={editCategoryName}
+                  onChange={(e) => setEditCategoryName(e.target.value)}
+                />
+              </Form.Item>
+
+              <Form.Item label="Category Image">
+                <div style={{ marginBottom: 16 }}>
+                  {editCategoryImagePreview && (
+                    <div style={{ marginBottom: 12, textAlign: "center" }}>
+                      <img
+                        src={editCategoryImagePreview}
+                        alt="Preview"
+                        height="80"
+                        width="80"
+                        style={{ borderRadius: 10, objectFit: "cover" }}
+                        onError={(e) => {
+                          if (!e.target.src.includes('data:image')) {
+                            e.target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="80" height="80"%3E%3Crect fill="%23f0f0f0" width="80" height="80"/%3E%3C/svg%3E';
+                          }
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
+
+                <Upload
+                  maxCount={1}
+                  beforeUpload={(file) => {
+                    setEditCategoryImage(file);
+                    const reader = new FileReader();
+                    reader.onload = (e) => setEditCategoryImagePreview(e.target.result);
+                    reader.readAsDataURL(file);
+                    return false;
+                  }}
+                >
+                  <Button>Change Image</Button>
+                </Upload>
+              </Form.Item>
+
+              <div className="d-flex justify-content-end" style={{ gap: "10px" }}>
+                <Button
+                  onClick={() => {
+                    setEditCategoryModalOpen(false);
+                    setEditingCategory(null);
+                    setEditCategoryName("");
+                    setEditCategoryImage(null);
+                    setEditCategoryImagePreview("");
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button className="item-modal-save-btn" type="primary" onClick={handleUpdateCategory}>
+                  Update Category
                 </Button>
               </div>
             </Form>

@@ -50,6 +50,7 @@ const CartPage = () => {
       return;
     }
     try {
+      dispatch({ type: "SHOW_LOADING" });
       const auth = localStorage.getItem("auth");
       const newObject = {
         ...value,
@@ -64,8 +65,10 @@ const CartPage = () => {
       message.success("Bill Generated");
       dispatch({ type: "CLEAR_CART" });
       localStorage.removeItem("cartItems");
+      dispatch({ type: "HIDE_LOADING" });
       navigate("/");
     } catch (error) {
+      dispatch({ type: "HIDE_LOADING" });
       message.error("Something went wrong");
       console.log(error);
     }
@@ -576,7 +579,9 @@ const CartPage = () => {
                       src={getImageUrl()}
                       alt={item.name}
                       onError={(e) => {
-                        e.target.src = 'https://via.placeholder.com/80?text=No+Image';
+                        if (!e.target.src.includes('placeholder')) {
+                          e.target.src = 'https://via.placeholder.com/80?text=No+Image';
+                        }
                       }}
                     />
                     <div className="jauter-item-info">

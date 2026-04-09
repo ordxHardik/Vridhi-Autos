@@ -580,7 +580,9 @@ const Homepage = () => {
                     src={getImageUrl()}
                     alt={category.name}
                     onError={(e) => {
-                      e.target.src = 'https://via.placeholder.com/80?text=' + category.name;
+                      if (!e.target.src.includes('placeholder')) {
+                        e.target.src = 'https://via.placeholder.com/80?text=' + category.name;
+                      }
                     }}
                   />
                   <div className="hp-cat-label">{category.name}</div>

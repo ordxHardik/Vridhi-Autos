@@ -62,6 +62,54 @@ const addCategory = async (req, res) => {
     }
 };
 
+// Update category
+const updateCategory = async (req, res) => {
+    try {
+        const { categoryId, name } = req.body;
+
+        const category = await Category.findById(categoryId);
+        if (!category) {
+            return res.status(404).send({ message: "Category not found" });
+        }
+
+        // Check if new name already exists
+        if (name && name !== category.name) {
+            const existingCategory = await Category.findOne({ name });
+            if (existingCategory) {
+                return res.status(400).send({ message: "Category name already exists" });
+            }
+            category.name = name;
+        }
+
+        // Update image if provided
+        if (req.file) {
+            let imagePath = '';
+            if (req.file.secure_url) {
+                imagePath = req.file.secure_url;
+            } else if (req.file.path) {
+                imagePath = req.file.path;
+            } else if (req.file.url) {
+                imagePath = req.file.url;
+            }
+
+            if (imagePath) {
+                imagePath = imagePath.replace(/^(https?):\/+/, '$1://');
+                category.image = imagePath;
+            }
+        }
+
+        await category.save();
+
+        res.status(200).send({
+            message: "Category updated successfully",
+            data: category,
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error);
+    }
+};
+
 // Delete category
 const deleteCategory = async (req, res) => {
     try {
@@ -81,5 +129,6 @@ const deleteCategory = async (req, res) => {
 module.exports = {
     getAllCategories,
     addCategory,
+    updateCategory,
     deleteCategory,
 };
