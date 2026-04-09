@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import DefaultLayout from "../components/DefaultLayout";
 import { useDispatch } from "react-redux";
-import { EyeOutlined } from "@ant-design/icons";
+import { EyeOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useReactToPrint } from "react-to-print";
 import axios from "axios";
-import { Modal, Button, Table } from "antd";
+import { Modal, Button, Table, message, Popconfirm } from "antd";
 import "../styles/InvoiceStyles.css";
 
 const BillsPage = () => {
@@ -40,49 +40,66 @@ const BillsPage = () => {
     content: () => componentRef.current,
   });
 
+  const handleDeleteBill = async (billId) => {
+    try {
+      dispatch({ type: "SHOW_LOADING" });
+      await axios.delete(
+        `${process.env.REACT_APP_SERVER_URL}/api/bills/delete-bill/${billId}`
+      );
+      message.success("Bill deleted successfully");
+      getAllBills();
+      dispatch({ type: "HIDE_LOADING" });
+    } catch (error) {
+      dispatch({ type: "HIDE_LOADING" });
+      message.error("Failed to delete bill");
+      console.log(error);
+    }
+  };
+
   const columns = [
     {
       title: "ID",
       dataIndex: "_id",
       ellipsis: true,
-      responsive: ["md"],
+      width: 120,
     },
     {
       title: "Customer Name",
       dataIndex: "customerName",
+      width: 140,
     },
     {
       title: "Organization",
       dataIndex: "organizationName",
       render: (text) => text || "-",
-      responsive: ["sm"],
+      width: 120,
     },
     {
       title: "Contact No",
       dataIndex: "customerNumber",
-      responsive: ["sm"],
+      width: 110,
     },
     {
       title: "Subtotal",
       dataIndex: "subTotal",
-      responsive: ["md"],
       render: (v) => `₹ ${v}`,
+      width: 100,
     },
     {
       title: "Tax",
       dataIndex: "tax",
-      responsive: ["lg"],
       render: (v) => `₹ ${v}`,
+      width: 80,
     },
     {
       title: "Total",
       dataIndex: "totalAmount",
       render: (v) => <strong>₹ {v}</strong>,
+      width: 100,
     },
     {
       title: "Order Date",
       dataIndex: "date",
-      responsive: ["md"],
       render: (date) => {
         if (!date) return "-";
         const orderDate = new Date(date);
@@ -92,22 +109,39 @@ const BillsPage = () => {
           day: "numeric",
         });
       },
+      width: 110,
       sorter: (a, b) => new Date(b.date) - new Date(a.date),
       defaultSortOrder: "descend",
     },
     {
-      title: "View",
+      title: "Actions",
       dataIndex: "_id",
+      width: 90,
       render: (id, record) => (
-        <button
-          className="bills-view-btn"
-          onClick={() => {
-            setSelectedBill(record);
-            setPopupModal(true);
-          }}
-        >
-          <EyeOutlined />
-        </button>
+        <div style={{ display: "flex", gap: "6px" }}>
+          <button
+            className="bills-view-btn"
+            onClick={() => {
+              setSelectedBill(record);
+              setPopupModal(true);
+            }}
+            title="View"
+          >
+            <EyeOutlined />
+          </button>
+          <Popconfirm
+            title="Delete Bill"
+            description="Are you sure you want to delete this bill?"
+            onConfirm={() => handleDeleteBill(id)}
+            okText="Yes"
+            cancelText="No"
+            okButtonProps={{ danger: true }}
+          >
+            <button className="bills-delete-btn" title="Delete">
+              <DeleteOutlined />
+            </button>
+          </Popconfirm>
+        </div>
       ),
     },
   ];
@@ -161,12 +195,13 @@ const BillsPage = () => {
         .bills-table-card {
           background: #fff;
           border-radius: 20px;
-          overflow: hidden;
+          overflow: auto;
           box-shadow: 0 4px 16px rgba(0,0,0,0.06);
         }
         .bills-table-card .ant-table {
           font-family: 'Inter', sans-serif;
           font-size: 14px;
+          width: 100%;
         }
         .bills-table-card .ant-table-thead > tr > th {
           background: #f8f8f8 !important;
@@ -177,14 +212,32 @@ const BillsPage = () => {
           color: #555 !important;
           border-bottom: 2px solid #f0f0f0 !important;
           padding: 14px 16px !important;
+          white-space: nowrap !important;
         }
         .bills-table-card .ant-table-tbody > tr > td {
           padding: 14px 16px !important;
           border-bottom: 1px solid #f8f8f8 !important;
           color: #333;
+          white-space: nowrap;
         }
         .bills-table-card .ant-table-tbody > tr:hover > td {
           background: #fafff0 !important;
+        }
+        .bills-table-card .ant-table-wrapper {
+          overflow-x: auto;
+        }
+        .bills-table-card .ant-table-wrapper::-webkit-scrollbar {
+          height: 6px;
+        }
+        .bills-table-card .ant-table-wrapper::-webkit-scrollbar-track {
+          background: #f1f1f1;
+        }
+        .bills-table-card .ant-table-wrapper::-webkit-scrollbar-thumb {
+          background: #c8f000;
+          border-radius: 3px;
+        }
+        .bills-table-card .ant-table-wrapper::-webkit-scrollbar-thumb:hover {
+          background: #b8e000;
         }
 
         /* View button */
@@ -192,11 +245,10 @@ const BillsPage = () => {
           background: #c8f000;
           border: none;
           border-radius: 50%;
-          width: 36px;
-          height: 36px;
           display: flex;
           align-items: center;
           justify-content: center;
+          padding: 8px 12px;
           font-size: 16px;
           color: #111;
           cursor: pointer;
@@ -204,6 +256,25 @@ const BillsPage = () => {
         }
         .bills-view-btn:hover {
           background: #b8e000;
+          transform: scale(1.1);
+        }
+
+        /* Delete button */
+        .bills-delete-btn {
+          background: #ff4444;
+          border: none;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 8px 12px;
+          font-size: 16px;
+          color: #fff;
+          cursor: pointer;
+          transition: background 0.2s, transform 0.15s;
+        }
+        .bills-delete-btn:hover {
+          background: #cc0000;
           transform: scale(1.1);
         }
 
@@ -269,8 +340,9 @@ const BillsPage = () => {
             columns={columns}
             dataSource={billsData}
             bordered={false}
-            scroll={{ x: true }}
+            scroll={{ x: 1000 }}
             rowKey="_id"
+            pagination={{ pageSize: 10 }}
           />
         </div>
       </div>
@@ -299,6 +371,7 @@ const BillsPage = () => {
               <div className="mt-2">
                 <p>
                   Customer Name : <b>{selectedBill.customerName}</b><br />
+                  Organization : <b>{selectedBill.organizationName || "-"}</b><br />
                   Phone No : <b>{selectedBill.customerNumber}</b><br />
                   Date : <b>{selectedBill.date.toString().substring(0, 10)}</b><br />
                 </p>

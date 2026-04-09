@@ -31,20 +31,38 @@ const CutomerPage = () => {
   }, []);
 
   const columns = [
-    { title: "ID", dataIndex: "_id", responsive: ["md"] },
+    { 
+      title: "ID", 
+      dataIndex: "_id", 
+      width: 120,
+      ellipsis: true,
+    },
     {
       title: "Customer Name",
       dataIndex: "customerName",
+      width: 140,
     },
     {
       title: "Organization",
       dataIndex: "organizationName",
       render: (text) => text || "-",
+      width: 140,
     },
-    { title: "Contact No", dataIndex: "customerNumber" },
+    { 
+      title: "Contact No", 
+      dataIndex: "customerNumber",
+      width: 130,
+    },
+    {
+      title: "Email",
+      dataIndex: "customerEmail",
+      width: 180,
+      ellipsis: true,
+    },
     {
       title: "Order Date",
       dataIndex: "date",
+      width: 160,
       render: (date) => {
         if (!date) return "-";
         const orderDate = new Date(date);
@@ -120,12 +138,26 @@ const CutomerPage = () => {
         .customer-table-wrapper {
           background: #ffffff;
           border-radius: 16px;
-          overflow: hidden;
+          overflow: auto;
           box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        }
+        .customer-table-wrapper::-webkit-scrollbar {
+          height: 8px;
+        }
+        .customer-table-wrapper::-webkit-scrollbar-track {
+          background: #f0f0f0;
+        }
+        .customer-table-wrapper::-webkit-scrollbar-thumb {
+          background: #c8f000;
+          border-radius: 4px;
+        }
+        .customer-table-wrapper::-webkit-scrollbar-thumb:hover {
+          background: #b8e000;
         }
 
         .customer-table-wrapper .ant-table {
           font-family: 'Open Sans', sans-serif;
+          width: 100%;
         }
 
         .customer-table-wrapper .ant-table-thead > tr > th {
@@ -137,6 +169,7 @@ const CutomerPage = () => {
           padding: 14px 12px !important;
           text-transform: uppercase;
           border: none !important;
+          white-space: nowrap !important;
         }
 
         .customer-table-wrapper .ant-table-tbody > tr {
@@ -152,6 +185,7 @@ const CutomerPage = () => {
           border-color: #e8e8e8 !important;
           font-size: 14px !important;
           color: #333 !important;
+          white-space: nowrap;
         }
 
         .customer-table-wrapper .ant-table-tbody > tr:last-child > td {
@@ -280,11 +314,10 @@ const CutomerPage = () => {
             <Table
               columns={columns}
               dataSource={billsData}
-              bordered
               pagination={{ pageSize: 10, showSizeChanger: true }}
-              size="small"
-              responsive
               rowKey="_id"
+              scroll={{ x: 1000 }}
+              bordered={false}
             />
           )}
         </div>

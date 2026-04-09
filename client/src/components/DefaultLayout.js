@@ -24,8 +24,19 @@ const DefaultLayout = ({ children }) => {
     }, [cartItems]);
 
     return (
-        <Layout>
+        <Layout style={{ height: "100vh", overflow: "hidden", display: "flex" }}>
             <style>{`
+                * {
+                    box-sizing: border-box;
+                }
+                
+                html, body, #root {
+                    height: 100%;
+                    margin: 0;
+                    padding: 0;
+                    overflow: hidden;
+                }
+
                 @keyframes fadeSlideIn {
                     from { opacity: 0; transform: translateX(-16px); }
                     to { opacity: 1; transform: translateX(0); }
@@ -35,20 +46,49 @@ const DefaultLayout = ({ children }) => {
                     to { opacity: 1; transform: translateY(0); }
                 }
 
+                /* Main Layout */
+                .site-layout {
+                    display: flex;
+                    flex-direction: column;
+                    height: 100%;
+                    flex: 1;
+                }
+
                 /* Sider */
                 .jauter-sider {
                     background: #111111 !important;
                     box-shadow: 2px 0 16px rgba(0,0,0,0.2);
+                    height: 100vh !important;
+                    overflow-y: auto !important;
+                    overflow-x: hidden !important;
+                }
+                .jauter-sider::-webkit-scrollbar {
+                    width: 6px;
+                }
+                .jauter-sider::-webkit-scrollbar-track {
+                    background: #1a1a1a;
+                }
+                .jauter-sider::-webkit-scrollbar-thumb {
+                    background: #c8f000;
+                    border-radius: 3px;
+                }
+                .jauter-sider::-webkit-scrollbar-thumb:hover {
+                    background: #b8e000;
                 }
                 .jauter-sider .ant-layout-sider-children {
                     background: transparent;
                     display: flex;
                     flex-direction: column;
+                    height: 100%;
+                    min-height: 0;
                 }
                 .jauter-sider .ant-menu {
                     background: transparent !important;
                     border: none !important;
                     padding: 0 8px;
+                    flex: 1;
+                    overflow-y: auto !important;
+                    overflow-x: hidden !important;
                 }
                 .jauter-sider .ant-menu-item {
                     color: #aaaaaa !important;
@@ -204,8 +244,26 @@ const DefaultLayout = ({ children }) => {
                     margin: 16px !important;
                     padding: 24px !important;
                     border-radius: 20px !important;
-                    min-height: 280px;
+                    flex: 1;
+                    overflow-y: auto;
+                    overflow-x: hidden;
                     animation: contentFade 0.4s ease;
+                    height: 100%;
+                    min-height: 0;
+                }
+                .jauter-content::-webkit-scrollbar {
+                    width: 8px;
+                }
+                .jauter-content::-webkit-scrollbar-track {
+                    background: #e8e8e8;
+                    border-radius: 20px;
+                }
+                .jauter-content::-webkit-scrollbar-thumb {
+                    background: #c8f000;
+                    border-radius: 20px;
+                }
+                .jauter-content::-webkit-scrollbar-thumb:hover {
+                    background: #b8e000;
                 }
 
                 @media (max-width: 768px) {
@@ -249,23 +307,18 @@ const DefaultLayout = ({ children }) => {
                         <Menu.Item key="/bills" icon={<CopyOutlined />}><Link to="/bills">Bills</Link></Menu.Item>
                         <Menu.Item key="/items" icon={<UnorderedListOutlined />}><Link to="/items">Items</Link></Menu.Item>
                         <Menu.Item key="/customers" icon={<UserOutlined />}><Link to="/customers">Customers</Link></Menu.Item>
-                        <Menu.Item key="/dev" icon={<GithubOutlined />}>
+                        {/* <Menu.Item key="/dev" icon={<GithubOutlined />}>
                             <a href="https://github.com/ishanaudichya/business-erp-mern" target="_blank" rel="noopener noreferrer">
                                 Git Repo
                             </a>
-                        </Menu.Item>
+                        </Menu.Item> */}
                         <Menu.Item key="/logout" icon={<LogoutOutlined />}
                             onClick={() => { localStorage.removeItem("auth"); navigate("/login"); }}>
                             Logout
                         </Menu.Item>
                     </Menu>
 
-                    <div className="jauter-sider-footer">
-                        {!collapsed && (<>Under ESPL<br /></>)}
-                        <a href="https://ishanaudichya.netlify.app/">
-                            {collapsed ? "IA" : "Ishan Audichya"}
-                        </a>
-                    </div>
+
                 </Sider>
             )}
 
