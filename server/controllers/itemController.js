@@ -23,13 +23,25 @@ const addItemController = async (req, res) => {
     // Log the file object for debugging
     console.log("File object from Cloudinary:", JSON.stringify(req.file, null, 2));
 
-    // CloudinaryStorage stores the URL in 'path' property
-    const imagePath = req.file.path || req.file.secure_url || req.file.url;
+    // CloudinaryStorage provides the full URL in 'path' or 'secure_url' property
+    let imagePath = '';
+    
+    if (req.file.secure_url) {
+      imagePath = req.file.secure_url;
+    } else if (req.file.path) {
+      imagePath = req.file.path;
+    } else if (req.file.url) {
+      imagePath = req.file.url;
+    }
+
     console.log("Image path being stored:", imagePath);
 
     if (!imagePath) {
       return res.status(400).json({ message: "Failed to get image URL from Cloudinary" });
     }
+
+    // Ensure URL is properly formatted (fix any malformed https://)
+    imagePath = imagePath.replace(/^(https?):\/\/+/, '$1://');
 
     const newItem = new itemModel({
       name,
@@ -56,9 +68,21 @@ const editItemController = async (req, res) => {
     // If a new file is uploaded, update the image URL from Cloudinary
     if (req.file) {
       console.log("File object from Cloudinary (edit):", JSON.stringify(req.file, null, 2));
-      const imagePath = req.file.path || req.file.secure_url || req.file.url;
+      let imagePath = '';
+      
+      if (req.file.secure_url) {
+        imagePath = req.file.secure_url;
+      } else if (req.file.path) {
+        imagePath = req.file.path;
+      } else if (req.file.url) {
+        imagePath = req.file.url;
+      }
+      
       console.log("Image path being stored (edit):", imagePath);
+      
       if (imagePath) {
+        // Ensure URL is properly formatted (fix any malformed https://)
+        imagePath = imagePath.replace(/^(https?):\/\/+/, '$1://');
         updateData.image = imagePath;
       }
     }
