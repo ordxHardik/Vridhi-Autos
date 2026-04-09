@@ -41,12 +41,10 @@ app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/bills", require("./routes/billsRoute"));
 app.use("/api/categories", require("./routes/categoryRoutes"));
 
-//For local development only
-if (process.env.NODE_ENV !== "production") {
-  const PORT = process.env.PORT || 8080;
-  app.listen(PORT, () => {
-    console.log(`Server Running On Port ${PORT}`.bgCyan.white);
-  });
-}
+//Start server on specified port (works for both local and production)
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+  console.log(`Server Running On Port ${PORT}`.bgCyan.white);
+});
 
 module.exports = app;
