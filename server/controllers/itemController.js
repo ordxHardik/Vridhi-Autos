@@ -15,10 +15,20 @@ const addItemController = async (req, res) => {
   try {
     const { name, price, category } = req.body;
 
-    // Get image URL from Cloudinary upload
-    let imagePath = '';
-    if (req.file) {
-      imagePath = req.file.secure_url; // Cloudinary provides secure_url
+    // Check if file was uploaded
+    if (!req.file) {
+      return res.status(400).json({ message: "Image file is required" });
+    }
+
+    // Log the file object for debugging
+    console.log("File object from Cloudinary:", JSON.stringify(req.file, null, 2));
+
+    // CloudinaryStorage stores the URL in 'path' property
+    const imagePath = req.file.path || req.file.secure_url || req.file.url;
+    console.log("Image path being stored:", imagePath);
+
+    if (!imagePath) {
+      return res.status(400).json({ message: "Failed to get image URL from Cloudinary" });
     }
 
     const newItem = new itemModel({
@@ -28,7 +38,7 @@ const addItemController = async (req, res) => {
       image: imagePath,
     });
     await newItem.save();
-    res.status(201).send("Item Created Successfully!");
+    res.status(201).json({ message: "Item Created Successfully!", image: imagePath });
   } catch (error) {
     res.status(400).json({ message: "Error creating item", error: error.message });
     console.log(error);
@@ -45,7 +55,12 @@ const editItemController = async (req, res) => {
 
     // If a new file is uploaded, update the image URL from Cloudinary
     if (req.file) {
-      updateData.image = req.file.secure_url;
+      console.log("File object from Cloudinary (edit):", JSON.stringify(req.file, null, 2));
+      const imagePath = req.file.path || req.file.secure_url || req.file.url;
+      console.log("Image path being stored (edit):", imagePath);
+      if (imagePath) {
+        updateData.image = imagePath;
+      }
     }
 
     await itemModel.findOneAndUpdate({ _id: itemId }, updateData, {

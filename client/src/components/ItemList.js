@@ -146,7 +146,7 @@ const ItemList = ({ item }) => {
                 <div className="jauter-item-img-wrap">
                     <img
                         alt={item.name}
-                        src={item.image.startsWith('http') ? item.image : `${process.env.REACT_APP_SERVER_URL}${item.image}`}
+                        src={item.image ? (item.image.startsWith('http') ? item.image : `${process.env.REACT_APP_SERVER_URL}${item.image}`) : 'https://via.placeholder.com/180?text=No+Image'}
                     />
                 </div>
                 <div className="jauter-item-body">

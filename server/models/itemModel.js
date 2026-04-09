@@ -16,7 +16,7 @@ const itemSchema = mongoose.Schema(
     },
     image: {
       type: String,
-      required: true,
+      default: null,
     },
   },
   { timestamp: true }

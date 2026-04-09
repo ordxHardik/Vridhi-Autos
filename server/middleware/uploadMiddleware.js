@@ -9,14 +9,21 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+console.log('Cloudinary Config:', {
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME ? '✓ Set' : '✗ Missing',
+    api_key: process.env.CLOUDINARY_API_KEY ? '✓ Set' : '✗ Missing',
+    api_secret: process.env.CLOUDINARY_API_SECRET ? '✓ Set' : '✗ Missing',
+});
+
 // Configure Cloudinary storage
 const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
-    params: {
-        folder: 'vridhi-autos', // Folder name in Cloudinary
+    params: async (req, file) => ({
+        folder: 'vridhi-autos',
         allowed_formats: ['jpeg', 'jpg', 'png', 'gif', 'webp'],
         resource_type: 'auto',
-    },
+        public_id: `${Date.now()}-${Math.random().toString(36).substring(7)}`,
+    }),
 });
 
 // File filter to allow only images
@@ -34,7 +41,7 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({
     storage: storage,
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+    limits: { fileSize: 5 * 1024 * 1024 },
     fileFilter: fileFilter,
 });
 
