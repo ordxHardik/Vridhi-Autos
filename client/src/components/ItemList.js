@@ -8,36 +8,36 @@ const ItemList = ({ item }) => {
     const { cartItems } = useSelector((state) => state.rootReducer);
     const isItemInCart = cartItems.some((cartItem) => cartItem._id === item._id);
 
-  // Determine the image URL
-  const getImageUrl = () => {
-    if (!item.image) {
-      return 'https://via.placeholder.com/180?text=No+Image';
-    }
+    // Determine the image URL
+    const getImageUrl = () => {
+        if (!item.image) {
+            return 'https://via.placeholder.com/180?text=No+Image';
+        }
 
-    let imageUrl = item.image;
+        let imageUrl = item.image;
 
-    // Fix malformed URLs (e.g., https// -> https://)
-    imageUrl = imageUrl.replace(/^(https?):\/\/([^/])/, '$1://$2');
+        // Fix malformed URLs (e.g., https// -> https://)
+        imageUrl = imageUrl.replace(/^(https?):\/\/([^/])/, '$1://$2');
 
-    // If it's a full URL (Cloudinary or any other), use it as-is
-    if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
-      return imageUrl;
-    }
+        // If it's a full URL (Cloudinary or any other), use it as-is
+        if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+            return imageUrl;
+        }
 
-    // If it's a relative path, prepend the server URL
-    if (imageUrl.startsWith('/')) {
-      return `${process.env.REACT_APP_SERVER_URL}${imageUrl}`;
-    }
+        // If it's a relative path, prepend the server URL
+        if (imageUrl.startsWith('/')) {
+            return `${process.env.REACT_APP_SERVER_URL}${imageUrl}`;
+        }
 
-    // Fallback: treat as relative path
-    return `${process.env.REACT_APP_SERVER_URL}/${imageUrl}`;
-  };
+        // Fallback: treat as relative path
+        return `${process.env.REACT_APP_SERVER_URL}/${imageUrl}`;
+    };
 
-  const handleAddToCart = () => {
-    if (!isItemInCart) {
-      dispatch({ type: "ADD_TO_CART", payload: { ...item, quantity: 1 } });
-    }
-  };
+    const handleAddToCart = () => {
+        if (!isItemInCart) {
+            dispatch({ type: "ADD_TO_CART", payload: { ...item, quantity: 1 } });
+        }
+    };
 
 
     return (

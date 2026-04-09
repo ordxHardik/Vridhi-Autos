@@ -25,7 +25,7 @@ const addItemController = async (req, res) => {
 
     // CloudinaryStorage provides the full URL in 'path' or 'secure_url' property
     let imagePath = '';
-    
+
     if (req.file.secure_url) {
       imagePath = req.file.secure_url;
     } else if (req.file.path) {
@@ -69,7 +69,7 @@ const editItemController = async (req, res) => {
     if (req.file) {
       console.log("File object from Cloudinary (edit):", JSON.stringify(req.file, null, 2));
       let imagePath = '';
-      
+
       if (req.file.secure_url) {
         imagePath = req.file.secure_url;
       } else if (req.file.path) {
@@ -77,9 +77,9 @@ const editItemController = async (req, res) => {
       } else if (req.file.url) {
         imagePath = req.file.url;
       }
-      
+
       console.log("Image path being stored (edit):", imagePath);
-      
+
       if (imagePath) {
         // Ensure URL is properly formatted (fix any malformed https://)
         imagePath = imagePath.replace(/^(https?):\/\/+/, '$1://');
