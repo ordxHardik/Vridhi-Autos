@@ -30,7 +30,7 @@ const addItemController = async (req, res) => {
     await newItem.save();
     res.status(201).send("Item Created Successfully!");
   } catch (error) {
-    res.status(400).send("error", error);
+    res.status(400).json({ message: "Error creating item", error: error.message });
     console.log(error);
   }
 };
@@ -54,7 +54,7 @@ const editItemController = async (req, res) => {
 
     res.status(201).json("item Updated");
   } catch (error) {
-    res.status(400).send(error);
+    res.status(400).json({ message: "Error updating item", error: error.message });
     console.log(error);
   }
 };
@@ -66,7 +66,7 @@ const deleteItemController = async (req, res) => {
     await itemModel.findOneAndDelete({ _id: itemId });
     res.status(200).json("item Deleted");
   } catch (error) {
-    res.status(400).send(error);
+    res.status(400).json({ message: "Error deleting item", error: error.message });
     console.log(error);
   }
 };
