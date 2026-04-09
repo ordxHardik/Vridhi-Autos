@@ -1,6 +1,41 @@
 const Category = require("../models/categoryModel");
+const cloudinary = require("cloudinary").v2;
 
-// Get all categories
+// Helper function to extract public_id from Cloudinary URL
+const extractPublicIdFromUrl = (url) => {
+    try {
+        if (!url) return null;
+        // URL format: https://res.cloudinary.com/cloud_name/image/upload/v{version}/{public_id}
+        const urlPath = url.split("/upload/")[1]; // Get part after /upload/
+        if (!urlPath) return null;
+        // Remove version identifier (v{timestamp}/)
+        const publicIdWithVersion = urlPath.split("/").slice(1).join("/");
+        // Remove file extension
+        const publicId = publicIdWithVersion.replace(/\.[^/.]+$/, "");
+        return publicId;
+    } catch (error) {
+        console.log("Error extracting public_id:", error);
+        return null;
+    }
+};
+
+// Helper function to delete image from Cloudinary
+const deleteFromCloudinary = async (imageUrl) => {
+    try {
+        if (!imageUrl) return;
+        const publicId = extractPublicIdFromUrl(imageUrl);
+        if (!publicId) {
+            console.log("Could not extract public_id from URL:", imageUrl);
+            return;
+        }
+        console.log("Deleting image from Cloudinary with public_id:", publicId);
+        await cloudinary.uploader.destroy(publicId);
+        console.log("Image deleted from Cloudinary successfully");
+    } catch (error) {
+        console.log("Error deleting from Cloudinary:", error.message);
+        // Don't throw error, just log it
+    }
+};
 const getAllCategories = async (req, res) => {
     try {
         const categories = await Category.find();
@@ -83,6 +118,11 @@ const updateCategory = async (req, res) => {
 
         // Update image if provided
         if (req.file) {
+            // Delete old image from Cloudinary
+            if (category.image) {
+                await deleteFromCloudinary(category.image);
+            }
+
             let imagePath = '';
             if (req.file.secure_url) {
                 imagePath = req.file.secure_url;
@@ -115,6 +155,15 @@ const deleteCategory = async (req, res) => {
     try {
         const { categoryId } = req.body;
 
+        // Get category before deleting to extract image URL
+        const category = await Category.findById(categoryId);
+
+        // Delete image from Cloudinary if it exists
+        if (category && category.image) {
+            await deleteFromCloudinary(category.image);
+        }
+
+        // Delete category from database
         await Category.findByIdAndDelete(categoryId);
 
         res.status(200).send({

@@ -10,13 +10,14 @@ import {
   HomeOutlined,
 } from "@ant-design/icons";
 import { Button, Modal, message, Form, Input, Select } from "antd";
+import Spinner from "../components/Spinner";
 
 const CartPage = () => {
   const [subTotal, setSubTotal] = useState(0);
   const [billPopup, setBillPopup] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { cartItems } = useSelector((state) => state.rootReducer);
+  const { cartItems, loading } = useSelector((state) => state.rootReducer);
 
   const handleDecreament = (record) => {
     if (record.quantity !== 1) {
@@ -76,6 +77,7 @@ const CartPage = () => {
 
   return (
     <>
+      {loading && <Spinner />}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&display=swap');
 

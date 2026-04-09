@@ -7,8 +7,10 @@ const addBillsController = async (req, res) => {
     const newBill = new billsModel(req.body);
     await newBill.save();
 
-    // Send order confirmation email
-    await sendOrderConfirmationEmail(req.body);
+    // Send order confirmation email (non-blocking - fire and forget)
+    sendOrderConfirmationEmail(req.body).catch((emailError) => {
+      console.log("Email sending failed:", emailError);
+    });
 
     res.send("Bill Created Successfully!");
   } catch (error) {
