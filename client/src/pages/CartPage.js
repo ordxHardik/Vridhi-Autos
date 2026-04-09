@@ -557,34 +557,50 @@ const CartPage = () => {
             </div>
           ) : (
             <>
-              {cartItems.map((item) => (
-                <div className="jauter-cart-item" key={item._id}>
-                  <img
-                    className="jauter-item-img"
-                    src={`${process.env.REACT_APP_SERVER_URL}${item.image}`}
-                    alt={item.name}
-                  />
-                  <div className="jauter-item-info">
-                    <div className="jauter-item-name">{item.name}</div>
-                    <div className="jauter-item-price">₹ {item.price}</div>
+              {cartItems.map((item) => {
+                const getImageUrl = () => {
+                  if (!item.image) return 'https://via.placeholder.com/180?text=No+Image';
+                  let url = item.image;
+                  // Fix malformed URLs: https// -> https://, http// -> http://
+                  url = url.replace(/^(https?):\/+/, '$1://');
+                  // If it's a full URL, use it
+                  if (url.startsWith('http://') || url.startsWith('https://')) return url;
+                  // Otherwise treat as relative path
+                  if (url.startsWith('/')) return `${process.env.REACT_APP_SERVER_URL}${url}`;
+                  return `${process.env.REACT_APP_SERVER_URL}/${url}`;
+                };
+                return (
+                  <div className="jauter-cart-item" key={item._id}>
+                    <img
+                      className="jauter-item-img"
+                      src={getImageUrl()}
+                      alt={item.name}
+                      onError={(e) => {
+                        e.target.src = 'https://via.placeholder.com/80?text=No+Image';
+                      }}
+                    />
+                    <div className="jauter-item-info">
+                      <div className="jauter-item-name">{item.name}</div>
+                      <div className="jauter-item-price">₹ {item.price}</div>
+                    </div>
+                    <div className="jauter-qty-controls">
+                      <span className="jauter-qty-btn" onClick={() => handleDecreament(item)}>
+                        <MinusCircleOutlined />
+                      </span>
+                      <span className="jauter-qty-num">{item.quantity}</span>
+                      <span className="jauter-qty-btn" onClick={() => handleIncreament(item)}>
+                        <PlusCircleOutlined />
+                      </span>
+                    </div>
+                    <div
+                      className="jauter-delete-btn"
+                      onClick={() => dispatch({ type: "DELETE_FROM_CART", payload: item })}
+                    >
+                      <DeleteOutlined />
+                    </div>
                   </div>
-                  <div className="jauter-qty-controls">
-                    <span className="jauter-qty-btn" onClick={() => handleDecreament(item)}>
-                      <MinusCircleOutlined />
-                    </span>
-                    <span className="jauter-qty-num">{item.quantity}</span>
-                    <span className="jauter-qty-btn" onClick={() => handleIncreament(item)}>
-                      <PlusCircleOutlined />
-                    </span>
-                  </div>
-                  <div
-                    className="jauter-delete-btn"
-                    onClick={() => dispatch({ type: "DELETE_FROM_CART", payload: item })}
-                  >
-                    <DeleteOutlined />
-                  </div>
-                </div>
-              ))}
+                );
+              })}
 
               {/* Totals inside green section */}
               <div className="jauter-subtotal-card">

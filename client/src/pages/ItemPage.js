@@ -84,16 +84,32 @@ const ItemPage = () => {
     {
       title: "Item",
       dataIndex: "name",
-      render: (name, record) => (
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <img
-            src={`${process.env.REACT_APP_SERVER_URL}${record.image}`}
-            alt={name}
-            style={{ width: 48, height: 48, borderRadius: 10, objectFit: "cover", background: "#f5f5f5" }}
-          />
-          <span style={{ fontWeight: 700, color: "#111" }}>{name}</span>
-        </div>
-      ),
+      render: (name, record) => {
+        const getImageUrl = () => {
+          if (!record.image) return 'https://via.placeholder.com/180?text=No+Image';
+          let url = record.image;
+          // Fix malformed URLs: https// -> https://, http// -> http://
+          url = url.replace(/^(https?):\/+/, '$1://');
+          // If it's a full URL, use it
+          if (url.startsWith('http://') || url.startsWith('https://')) return url;
+          // Otherwise treat as relative path
+          if (url.startsWith('/')) return `${process.env.REACT_APP_SERVER_URL}${url}`;
+          return `${process.env.REACT_APP_SERVER_URL}/${url}`;
+        };
+        return (
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <img
+              src={getImageUrl()}
+              alt={name}
+              style={{ width: 48, height: 48, borderRadius: 10, objectFit: "cover", background: "#f5f5f5" }}
+              onError={(e) => {
+                e.target.src = 'https://via.placeholder.com/48?text=No+Image';
+              }}
+            />
+            <span style={{ fontWeight: 700, color: "#111" }}>{name}</span>
+          </div>
+        );
+      },
     },
     {
       title: "Category",
@@ -465,7 +481,7 @@ const ItemPage = () => {
           <Modal
             className="item-modal"
             title={editItem !== null ? "Edit Item" : "Add New Item"}
-            visible={popupModal}
+            open={popupModal}
             onCancel={() => {
               setEditItem(null);
               setPopupModal(false);
@@ -529,7 +545,7 @@ const ItemPage = () => {
           <Modal
             className="item-modal"
             title="Add New Category"
-            visible={categoryModal}
+            open={categoryModal}
             onCancel={() => {
               setNewCategoryName("");
               setNewCategoryImage(null);

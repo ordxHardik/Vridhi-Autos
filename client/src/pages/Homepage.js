@@ -557,20 +557,36 @@ const Homepage = () => {
           {/* Shop by Need */}
           <div className="hp-section-title">Shop by Need</div>
           <div className="hp-category-scroll">
-            {categories.map((category) => (
-              <div
-                key={category._id}
-                className={`hp-cat-card ${selecedCategory === category.name ? "active" : ""}`}
-                onClick={() => setSelecedCategory(category.name)}
-              >
-                <img
-                  className="hp-cat-img"
-                  src={`${process.env.REACT_APP_SERVER_URL}${category.image}`}
-                  alt={category.name}
-                />
-                <div className="hp-cat-label">{category.name}</div>
-              </div>
-            ))}
+            {categories.map((category) => {
+              const getImageUrl = () => {
+                if (!category.image) return 'https://via.placeholder.com/80?text=No+Image';
+                let url = category.image;
+                // Fix malformed URLs: https// -> https://, http// -> http://
+                url = url.replace(/^(https?):\/+/, '$1://');
+                // If it's a full URL, use it
+                if (url.startsWith('http://') || url.startsWith('https://')) return url;
+                // Otherwise treat as relative path
+                if (url.startsWith('/')) return `${process.env.REACT_APP_SERVER_URL}${url}`;
+                return `${process.env.REACT_APP_SERVER_URL}/${url}`;
+              };
+              return (
+                <div
+                  key={category._id}
+                  className={`hp-cat-card ${selecedCategory === category.name ? "active" : ""}`}
+                  onClick={() => setSelecedCategory(category.name)}
+                >
+                  <img
+                    className="hp-cat-img"
+                    src={getImageUrl()}
+                    alt={category.name}
+                    onError={(e) => {
+                      e.target.src = 'https://via.placeholder.com/80?text=' + category.name;
+                    }}
+                  />
+                  <div className="hp-cat-label">{category.name}</div>
+                </div>
+              );
+            })}
           </div>
 
           {/* Items */}

@@ -282,7 +282,7 @@ const BillsPage = () => {
           width={400}
           pagination={false}
           title="Invoice Details"
-          visible={popupModal}
+          open={popupModal}
           onCancel={() => setPopupModal(false)}
           footer={false}
         >

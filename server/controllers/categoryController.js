@@ -16,11 +16,32 @@ const addCategory = async (req, res) => {
     try {
         const { name } = req.body;
 
-        // Get image path from uploaded file
-        let imagePath = '';
-        if (req.file) {
-            imagePath = `/uploads/${req.file.filename}`;
+        // Check if file was uploaded
+        if (!req.file) {
+            return res.status(400).json({ message: "Image file is required" });
         }
+
+        // Log the file object for debugging
+        console.log("File object from Cloudinary (category):", JSON.stringify(req.file, null, 2));
+
+        // Get image URL from Cloudinary
+        let imagePath = '';
+        if (req.file.secure_url) {
+            imagePath = req.file.secure_url;
+        } else if (req.file.path) {
+            imagePath = req.file.path;
+        } else if (req.file.url) {
+            imagePath = req.file.url;
+        }
+
+        console.log("Image path being stored (category):", imagePath);
+
+        if (!imagePath) {
+            return res.status(400).json({ message: "Failed to get image URL from Cloudinary" });
+        }
+
+        // Ensure URL is properly formatted
+        imagePath = imagePath.replace(/^(https?):\/\/+/, '$1://');
 
         // Check if category already exists
         const existingCategory = await Category.findOne({ name });
