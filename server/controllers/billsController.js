@@ -7,15 +7,23 @@ const addBillsController = async (req, res) => {
     const newBill = new billsModel(req.body);
     await newBill.save();
 
-    // Send order confirmation email to customer (non-blocking - fire and forget)
-    sendOrderConfirmationEmail(req.body).catch((emailError) => {
-      console.log("❌ Customer email sending failed:", emailError);
-    });
+    // Send order confirmation email to customer (fire and forget - don't block response)
+    sendOrderConfirmationEmail(req.body)
+      .then((result) => {
+        console.log("Email result:", result);
+      })
+      .catch((emailError) => {
+        console.log("❌ Customer email sending failed:", emailError.message);
+      });
 
-    // Send admin notification email (non-blocking - fire and forget)
-    sendAdminNotificationEmail(req.body).catch((emailError) => {
-      console.log("❌ Admin email sending failed:", emailError);
-    });
+    // Send admin notification email (fire and forget - don't block response)
+    sendAdminNotificationEmail(req.body)
+      .then((result) => {
+        console.log("Admin email result:", result);
+      })
+      .catch((emailError) => {
+        console.log("❌ Admin email sending failed:", emailError.message);
+      });
 
     res.send("Bill Created Successfully!");
   } catch (error) {

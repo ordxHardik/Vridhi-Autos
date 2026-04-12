@@ -1,22 +1,12 @@
-const nodemailer = require("nodemailer");
+const sgMail = require("@sendgrid/mail");
 
-// Create email transporter (you'll need to configure these environment variables)
-const transporter = nodemailer.createTransport({
-  service: process.env.EMAIL_SERVICE || "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD,
-  },
-});
+// Initialize SendGrid with API key
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-// Verify transporter connectivity on startup
-transporter.verify((error, success) => {
-  if (error) {
-    console.error("Email transporter error:", error);
-  } else {
-    console.log("Email service is ready to send messages");
-  }
-});
+// Verify SendGrid configuration on startup
+console.log("📧 Email Service: SendGrid");
+console.log("API Key configured:", process.env.SENDGRID_API_KEY ? "✅ Yes" : "❌ No");
+console.log("From Email:", process.env.EMAIL_USER);
 
 // Generate HTML email template for order confirmation
 const generateOrderEmailHTML = (orderData) => {
@@ -106,22 +96,26 @@ const generateOrderEmailHTML = (orderData) => {
 const sendOrderConfirmationEmail = async (orderData) => {
   try {
     if (!orderData.customerEmail) {
-      console.warn("No customer email provided for order confirmation");
+      console.warn("⚠️ No customer email provided for order confirmation");
       return { success: false, message: "No customer email provided" };
     }
 
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
+    const msg = {
       to: orderData.customerEmail,
+      from: process.env.EMAIL_USER,
       subject: `Order Confirmation - Vridhi Autos | ₹${Number(orderData.totalAmount).toFixed(2)}`,
       html: generateOrderEmailHTML(orderData),
     };
 
-    const info = await transporter.sendMail(mailOptions);
+    await sgMail.send(msg);
     console.log("✅ Order confirmation email sent to customer:", orderData.customerEmail);
     return { success: true, message: "Customer email sent successfully" };
   } catch (error) {
-    console.error("❌ Error sending customer email:", error.message);
+    console.error("❌ Error sending customer email to:", orderData.customerEmail);
+    console.error("Error details:", error.message);
+    if (error.response) {
+      console.error("Response body:", error.response.body);
+    }
     return { success: false, message: error.message };
   }
 };
@@ -212,18 +206,22 @@ const sendAdminNotificationEmail = async (orderData) => {
     </html>
   `;
 
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
+    const msg = {
       to: adminEmail,
+      from: process.env.EMAIL_USER,
       subject: `[NEW ORDER] ${orderData.customerName} - ₹${Number(orderData.totalAmount).toFixed(2)}`,
       html: adminHTML,
     };
 
-    const info = await transporter.sendMail(mailOptions);
+    await sgMail.send(msg);
     console.log("✅ Admin notification email sent to:", adminEmail);
     return { success: true, message: "Admin notification sent successfully" };
   } catch (error) {
-    console.error("❌ Error sending admin email:", error.message);
+    console.error("❌ Error sending admin email to:", process.env.ADMIN_EMAIL);
+    console.error("Error details:", error.message);
+    if (error.response) {
+      console.error("Response body:", error.response.body);
+    }
     return { success: false, message: error.message };
   }
 };
