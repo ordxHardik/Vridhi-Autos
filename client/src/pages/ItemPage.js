@@ -273,7 +273,7 @@ const ItemPage = () => {
         formData.append("image", editCategoryImage);
       }
 
-      const response = await axios.post(
+      await axios.post(
         `${process.env.REACT_APP_SERVER_URL}/api/categories/update-category`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }

@@ -10,14 +10,32 @@ import {
   HomeOutlined,
 } from "@ant-design/icons";
 import { Button, Modal, message, Form, Input, Select } from "antd";
+import Cookies from "js-cookie";
 import Spinner from "../components/Spinner";
+import Header from "../components/Header";
 
 const CartPage = () => {
   const [subTotal, setSubTotal] = useState(0);
   const [billPopup, setBillPopup] = useState(false);
+  const [form] = Form.useForm();
+  const [initialFormData, setInitialFormData] = useState({});
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { cartItems, loading } = useSelector((state) => state.rootReducer);
+
+  // ── LOAD FORM DATA FROM COOKIES ON MOUNT ──
+  useEffect(() => {
+    const savedFormData = Cookies.get("cartFormData");
+    if (savedFormData) {
+      try {
+        const parsedData = JSON.parse(savedFormData);
+        setInitialFormData(parsedData);
+        form.setFieldsValue(parsedData);
+      } catch (error) {
+        console.log("Error loading saved form data:", error);
+      }
+    }
+  }, [form]);
 
   const handleDecreament = (record) => {
     if (record.quantity !== 1) {
@@ -51,6 +69,9 @@ const CartPage = () => {
       return;
     }
     try {
+      // ── SAVE FORM DATA TO COOKIE ──
+      Cookies.set("cartFormData", JSON.stringify(value), { expires: 30 }); // expires in 30 days
+
       dispatch({ type: "SHOW_LOADING" });
       const auth = localStorage.getItem("auth");
       const newObject = {
@@ -77,6 +98,7 @@ const CartPage = () => {
 
   return (
     <>
+      <Header />
       {loading && <Spinner />}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&display=swap');
@@ -652,7 +674,7 @@ const CartPage = () => {
         onCancel={() => setBillPopup(false)}
         footer={false}
       >
-        <Form layout="vertical" onFinish={handleSubmit}>
+        <Form layout="vertical" form={form} onFinish={handleSubmit} initialValues={initialFormData}>
           <Form.Item
             name="customerName"
             label="Customer Name"
@@ -670,7 +692,13 @@ const CartPage = () => {
           <Form.Item
             name="customerNumber"
             label="Contact Number"
-            rules={[{ required: true, message: "Please enter contact number" }]}
+            rules={[
+              { required: true, message: "Please enter contact number" },
+              {
+                pattern: /^[0-9]{10}$/,
+                message: "Contact number must be exactly 10 digits"
+              }
+            ]}
           >
             <Input placeholder="Contact Number" />
           </Form.Item>
@@ -683,6 +711,13 @@ const CartPage = () => {
             ]}
           >
             <Input placeholder="customer@example.com" />
+          </Form.Item>
+          <Form.Item
+            name="customerAddress"
+            label="Address"
+            rules={[{ required: true, message: "Please enter address" }]}
+          >
+            <Input placeholder="Enter your address" />
           </Form.Item>
           <Form.Item
             name="paymentMode"

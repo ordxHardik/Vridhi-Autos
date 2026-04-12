@@ -6,10 +6,14 @@
   box-sizing: border-box;
 }
 
-html, body, #root {
+html, body {
   height: 100%;
   width: 100%;
-  overflow: hidden;
+}
+
+#root {
+  width: 100%;
+  overflow-y: auto;
 }
 
 body {

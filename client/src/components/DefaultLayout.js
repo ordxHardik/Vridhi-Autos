@@ -4,7 +4,7 @@ import { Layout, Menu } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import {
     MenuUnfoldOutlined, MenuFoldOutlined, UserOutlined, LogoutOutlined,
-    HomeOutlined, CopyOutlined, UnorderedListOutlined, GithubOutlined,
+    HomeOutlined, CopyOutlined, UnorderedListOutlined,
 } from "@ant-design/icons";
 import "../styles/DefaultLayout.css";
 import Spinner from "./Spinner";
